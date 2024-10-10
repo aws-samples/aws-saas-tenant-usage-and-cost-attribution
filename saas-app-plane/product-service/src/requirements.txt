@@ -1,0 +1,5 @@
+aws_lambda_powertools[Tracer,Logger,Metrics]
+jsonpickle
+aws_requests_auth
+requests
+simplejson
