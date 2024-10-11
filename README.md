@@ -17,6 +17,7 @@ In order to run this workshop you will need access to a workstation with an IDE 
 4. [AWS CDK](https://docs.aws.amazon.com/cdk/v2/guide/cli.html) 2.160 or above, which is used for writing the infrastructure-as-a-code of our microservices.
 5. Node 18 or above
 6. Git
+7. jq
 
 ## Deploy the AWS SaaS Builder Toolkit (SBT) control plane 
 ```
