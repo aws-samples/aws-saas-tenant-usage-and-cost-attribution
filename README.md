@@ -41,6 +41,7 @@ This stack provisions the
 ```
 cd saas-app-plane/shared-services/scripts/
 ./deploy.sh 
+cd ../../../
 ```
 ## Deploy the serverless product and order microservice
 

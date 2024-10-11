@@ -1,6 +1,7 @@
 import boto3
 import os
 import psycopg
+import json
 
 secrets_manager = boto3.client('secretsmanager')
 creds_secret_name = os.getenv('DB_CRED_SECRET_NAME')                
@@ -56,10 +57,9 @@ def query(connection, sql):
 
 def get_secret_value(secret_id):
     response = secrets_manager.get_secret_value(SecretId=secret_id)
-    secret_value = response['SecretString']
 
     #convert string to json
-    secret_value = eval(secret_value)
+    secret_value = json.loads(response['SecretString'])
     
     password = secret_value["password"]
     username = secret_value["username"]

@@ -49,9 +49,9 @@ def get_secret_withSecretId(secretId, logger):
     print("inside get_secret", secretId)
     # Retrieve the secret value from Secrets Manager
     response = secrets_manager.get_secret_value(SecretId=secretId)
-    secret_value = response['SecretString']
+
     #convert string to json
-    secret_value = eval(secret_value)
+    secret_value = json.loads(response['SecretString'])
     password = secret_value["password"]
     host = secret_value["host"]
     port = secret_value["port"]
