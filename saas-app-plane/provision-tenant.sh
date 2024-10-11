@@ -58,17 +58,14 @@ export tenantStatus="Complete"
 
 echo "FEATURES: $FEATURES"
 echo "CDK_PARAM_TENANT_ID: $CDK_PARAM_TENANT_ID"
-
-# get the /package/saas-app-plane.zip from the sharedservicesstack bucket
-ZIP_FILE_NAME="package/saas-app-plane.zip"
-BUCKET_NAME=$(aws cloudformation describe-stacks --stack-name SharedServicesStack --query "Stacks[0].Outputs[?ExportName=='AthenaOutputBucketName'].OutputValue" | jq -r '.[0]')
-echo "BUCKET_NAME: $BUCKET_NAME"
-
-aws s3 cp s3://$BUCKET_NAME/$ZIP_FILE_NAME ./
-
-echo "Unzipping the saas-app-plane.zip file"
-unzip -q saas-app-plane.zip -d ./saas-app-plane
-echo "Unzipped the saas-app-plane.zip file"
+# clone the github code 
+echo "clone start saas-app-plane from github"
+git clone https://github.com/aws-samples/aws-saas-tenant-usage-and-cost-attribution.git
+ls -ltr
+cd aws-saas-tenant-usage-and-cost-attribution
+echo "clone complete saas-app-plane from github"
+echo $PWD
+ls -ltr
 # if $FEATURES=MediaService then do set of commands
 if [[ "$FEATURES" == *"MediaService"* ]]; then
     echo "Deploying Media Service"

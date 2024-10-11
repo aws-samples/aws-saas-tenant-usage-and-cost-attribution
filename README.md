@@ -42,16 +42,6 @@ This stack provisions the
 cd saas-app-plane/shared-services/scripts/
 ./deploy.sh 
 ```
-### [Interim step] Packaging the saas-app-plane
-
-As an interim step, package the saas-app-plane, upload to Amazon S3 so that it will be used in the provision-tenant.sh as part of AWS Code Build pipeline during tenant provisioning. This step is not required once the git project goes public, in that case we will do git clone.
-
-```
-./package-app-plane.sh upload
-cd ../../../
-
-```
-
 ## Deploy the serverless product and order microservice
 
 Deploy the pooled serverless product and order microservices. The below command will deploy the AWS Lambda and Amazon DynamoDB tables required for product and order services.
