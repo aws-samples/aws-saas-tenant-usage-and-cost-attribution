@@ -166,10 +166,10 @@ export class ApplicationPlaneStack extends cdk.Stack {
     });
     nlbTargetGroup.node.addDependency(listener);
 
-    // Create a security group for the ALB
-    const dbSecurityGroup = new ec2.SecurityGroup(this, 'DBSecurityGroup', {
+    const fargateSecurityGroup = new ec2.SecurityGroup(this, 'FargateSecurityGroup', {
       vpc,
-      description: 'Security group for AuroraPostgres.',
+      description: 'Allow traffic from ALB to Fargate tasks',
+      allowAllOutbound: true,
     });
 
     // -------- Create the aurora postgres cluster
@@ -177,7 +177,7 @@ export class ApplicationPlaneStack extends cdk.Stack {
       vpc: vpc,
       dbName: 'ProductReview',
       auroraClusterUsername: "saasadmin",
-      ingressSources: [dbSecurityGroup],
+      ingressSources: [fargateSecurityGroup],
       instanceType: ec2.InstanceType.of(
         ec2.InstanceClass.R6G,
         ec2.InstanceSize.LARGE
@@ -322,9 +322,9 @@ export class ApplicationPlaneStack extends cdk.Stack {
       value: albSecurityGroup.securityGroupId,
       exportName: 'ALBSecurityGroupId',
     });
-    new cdk.CfnOutput(this, 'DBSecurityGroupId', {
-      value: dbSecurityGroup.securityGroupId,
-      exportName: 'DBSecurityGroupId',
+    new cdk.CfnOutput(this, 'FargateSecurityGroupId', {
+      value: fargateSecurityGroup.securityGroupId,
+      exportName: 'FargateSecurityGroupId',
     });
     new cdk.CfnOutput(this, `ProductReviewALBArn`, {value: alb.loadBalancerArn, exportName: `ProductReviewALBArn`});
     new cdk.CfnOutput(this, `ProductReviewListenerArn`, {

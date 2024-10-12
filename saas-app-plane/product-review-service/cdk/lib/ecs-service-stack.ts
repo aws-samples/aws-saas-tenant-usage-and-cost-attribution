@@ -28,9 +28,7 @@ export class ECSServiceStack extends cdk.Stack {
     // Import values from ApplicationPlaneStack outputs
     const vpcId = cdk.Fn.importValue(`ProductReviewVpcId`);
     const clusterName = cdk.Fn.importValue(`ProductReviewECSClusterName`);
-    const lbArn = cdk.Fn.importValue(`ProductReviewALBArn`);
     const listenerArn = cdk.Fn.importValue(`ProductReviewListenerArn`);
-    const securityGroupId = cdk.Fn.importValue(`ProductReviewALBSecurityGroupId`);
     const db_name = cdk.Fn.importValue(`ProductReviewDBName`);
     const subnetIdsString = cdk.Fn.importValue('PrivateSubnets');
     const subnetIds = cdk.Fn.split(',', subnetIdsString);
@@ -52,27 +50,11 @@ export class ECSServiceStack extends cdk.Stack {
     const albSecurityGroup = ec2.SecurityGroup.fromSecurityGroupId(this, 'ImportedALBSecurityGroup', albSecurityGroupId);
 
     // Import the Aurora database security group.
-    const dbSecurityGroupId = cdk.Fn.importValue('DBSecurityGroupId');
-    const dbSecurityGroup = ec2.SecurityGroup.fromSecurityGroupId(this, 'ImportedDBSecurityGroup', dbSecurityGroupId);
-
-    // Create a security group for the Fargate tasks.
-    const fargateSecurityGroup = new ec2.SecurityGroup(this, 'FargateSecurityGroup', {
-      vpc,
-      description: 'Allow traffic from ALB to Fargate tasks',
-      allowAllOutbound: true,
-    });
+    const fargateSecurityGroupId = cdk.Fn.importValue('FargateSecurityGroupId');
+    const fargateSecurityGroup = ec2.SecurityGroup.fromSecurityGroupId(this, 'FargateSecurityGroup', fargateSecurityGroupId);
 
     // Allow inbound traffic from the ALB security group to the Fargate tasks on port 80.
     fargateSecurityGroup.addIngressRule(albSecurityGroup, ec2.Port.tcp(80), 'Allow traffic from ALB');
-
-    // Allow the imported Fargate security group to access the Aurora database.
-    dbSecurityGroup.addIngressRule(fargateSecurityGroup, ec2.Port.tcp(5432), 'Allow Fargate tasks to access Aurora PostgreSQL.')
-
-    // Import Load Balancer
-    const lb = elbv2.ApplicationLoadBalancer.fromApplicationLoadBalancerAttributes(this, 'LoadBalancer', {
-      loadBalancerArn: lbArn,
-      securityGroupId: securityGroupId
-    });
 
     // Import existing listener using Listener ARN
     const listener = elbv2.ApplicationListener.fromApplicationListenerAttributes(this, 'ExistingListener', {
