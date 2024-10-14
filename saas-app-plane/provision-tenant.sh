@@ -23,6 +23,15 @@ SAAS_APP_USERPOOL_ID=$(aws cloudformation describe-stacks --stack-name $SHARED_S
 SAAS_APP_CLIENT_ID=$(aws cloudformation describe-stacks --stack-name $SHARED_SERVICES_STACK_NAME --query "Stacks[0].Outputs[?OutputKey=='$APP_CLIENT_ID_OUTPUT_PARAM_NAME'].OutputValue" --output text)
 API_GATEWAY_URL=$(aws cloudformation describe-stacks --stack-name $SHARED_SERVICES_STACK_NAME --query "Stacks[0].Outputs[?OutputKey=='$API_GATEWAY_URL_OUTPUT_PARAM_NAME'].OutputValue" --output text)
 
+# Code to generate a random password with Alpha Numeric and one symbol character
+PASSWORD=$(openssl rand -base64 10 | sed 's/[\/+=]/#/g')
+echo "Generated Password: $PASSWORD"
+
+# set this password as a secret in secrets manager
+aws secretsmanager create-secret \
+  --name "$TENANT_ADMIN_USERNAME" \
+  --secret-string "$PASSWORD" \
+  --region "$AWS_REGION"
 
 # Create tenant admin user
 aws cognito-idp admin-create-user \
@@ -46,7 +55,7 @@ echo "Set user password"
 aws cognito-idp admin-set-user-password \
   --user-pool-id $SAAS_APP_USERPOOL_ID \
   --username $TENANT_ADMIN_USERNAME \
-  --password '#CostPerTenant1234' \
+  --password $PASSWORD \
   --permanent
 
 # Create JSON response of output parameters

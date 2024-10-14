@@ -47,14 +47,36 @@ do
 done
 # Print the total number of users
 echo "Total number of users across all tenants: ${#TENANT_USER_ARRAY[@]}"
+TEMP_TENANT_PASSWORD='#CostPerTenant1234'
 for TENANT_USER in "${TENANT_USER_ARRAY[@]}"; do
   echo "Creating data for Test User: $TENANT_USER"
+
+  # get the password from the aws secrets manager
+  # Attempt to retrieve the secret value
+  if ! TENANT_PASSWORD=$(aws secretsmanager get-secret-value --secret-id "$TENANT_USER" --query 'SecretString' --output text 2>&1); then
+      # Check for specific error conditions
+      if echo "$TENANT_PASSWORD" | grep -q "ResourceNotFoundException"; then
+          echo "Secret not found. Please check the secret name and ensure it exists."
+          TENANT_PASSWORD=$TEMP_TENANT_PASSWORD
+      elif echo "$TENANT_PASSWORD" | grep -q "AccessDeniedException"; then
+          echo "Access denied. Please check your IAM permissions."
+          TENANT_PASSWORD=$TEMP_TENANT_PASSWORD
+      elif echo "$TENANT_PASSWORD" | grep -q "InvalidParameterException"; then
+          echo "Invalid parameter. Please check your input parameters."
+          TENANT_PASSWORD=$TEMP_TENANT_PASSWORD
+      else
+          # Generic error handling
+          echo "Failed to retrieve secret value for: $TENANT_USER"
+          TENANT_PASSWORD=$TEMP_TENANT_PASSWORD
+      fi
+  fi
+  echo 'TENANT_PASSWORD='$TENANT_PASSWORD
 
   TENANT_TOKEN=$(aws cognito-idp admin-initiate-auth \
     --user-pool-id $TENANT_USERPOOL_ID \
     --auth-flow ADMIN_USER_PASSWORD_AUTH \
     --client-id $TENANT_USERPOOL_CLIENT_ID \
-    --auth-parameters USERNAME=$TENANT_USER,PASSWORD='#CostPerTenant1234' \
+    --auth-parameters USERNAME=$TENANT_USER,PASSWORD=$TENANT_PASSWORD \
     --query 'AuthenticationResult.IdToken' \
     --output text)
 
