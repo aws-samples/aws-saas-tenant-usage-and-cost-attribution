@@ -30,7 +30,11 @@ def get_product(event, key):
         productId = key.split(":")[1] 
         logger.log_with_tenant_context(event, shardId)
         logger.log_with_tenant_context(event, productId)
-        response = table.get_item(Key={'shardId': shardId, 'productId': productId}, ReturnConsumedCapacity='TOTAL')
+        
+        #TODO: Add ReturnConsumedCapacity='TOTAL' to the response. Comment out line 34 and then uncomment line 35.
+        response = table.get_item(Key={'shardId': shardId, 'productId': productId})
+        #response = table.get_item(Key={'shardId': shardId, 'productId': productId}, ReturnConsumedCapacity='TOTAL')
+        
         item = response['Item']
         product = Product(item['shardId'], item['productId'], item['sku'], item['name'], item['price'], item['category'])
         consumed_capacity = response['ConsumedCapacity']

@@ -25,8 +25,11 @@ def get_product(event, context):
     key = params['id']
     logger.log_with_tenant_context(event, key)
     product, consumed_capacity = product_service_dal.get_product(event, key)
-    logger.log_with_tenant_and_function_context(event, context, {"consumed_capacity": consumed_capacity},
-                                                "This log will be received by the Lambda extension using the Telemetry API")
+    
+    #TODO: uncomment the below line to add DynamoDB consumed capacity to the logs
+    #logger.log_with_tenant_and_function_context(event, context, {"consumed_capacity": consumed_capacity},
+    #                                             "This log will be received by the Lambda extension using the Telemetry API")
+    
     metrics_manager.record_metric(event, "SingleProductRequested", "Count", 1)
     return utils.generate_response(product)
 

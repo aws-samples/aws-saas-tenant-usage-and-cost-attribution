@@ -1,0 +1,20 @@
+altgraph @ file:///AppleInternal/Library/BuildRoots/9dd5efe2-7fad-11ee-b588-aa530c46a9ea/Library/Caches/com.apple.xbs/Sources/python3/altgraph-0.17.2-py2.py3-none-any.whl
+astroid==3.2.2
+boto3==1.34.131
+botocore==1.34.131
+dill==0.3.8
+future @ file:///AppleInternal/Library/BuildRoots/9dd5efe2-7fad-11ee-b588-aa530c46a9ea/Library/Caches/com.apple.xbs/Sources/python3/future-0.18.2-py3-none-any.whl
+git-remote-codecommit==1.16
+isort==5.13.2
+jmespath==1.0.1
+macholib @ file:///AppleInternal/Library/BuildRoots/9dd5efe2-7fad-11ee-b588-aa530c46a9ea/Library/Caches/com.apple.xbs/Sources/python3/macholib-1.15.2-py2.py3-none-any.whl
+mccabe==0.7.0
+platformdirs==4.2.2
+pylint==3.2.3
+python-dateutil==2.8.2
+s3transfer==0.10.1
+six @ file:///AppleInternal/Library/BuildRoots/9dd5efe2-7fad-11ee-b588-aa530c46a9ea/Library/Caches/com.apple.xbs/Sources/python3/six-1.15.0-py2.py3-none-any.whl
+tomli==2.0.1
+tomlkit==0.12.5
+typing_extensions==4.12.2
+urllib3==1.26.15

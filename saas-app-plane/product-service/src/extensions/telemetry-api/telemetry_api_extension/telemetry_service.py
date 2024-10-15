@@ -128,8 +128,9 @@ def process_platform_message(message):
         if tenant_platform_report:
             tenant_platform_report.request_id = message['record']['requestId']
             tenant_platform_report.timestamp = message['time']
-            tenant_platform_report.duration_ms = message['record']['metrics']['durationMs']
-            tenant_platform_report.billed_duration_ms = message['record']['metrics']['billedDurationMs']
+            #Uncomment below two lines to add lambda duration to CloudWatch
+            #tenant_platform_report.duration_ms = message['record']['metrics']['durationMs']
+            #tenant_platform_report.billed_duration_ms = message['record']['metrics']['billedDurationMs']
             tenant_platform_report.memory_size_mb = message['record']['metrics']['memorySizeMB']
             tenant_platform_report.max_memory_used_mb = message['record']['metrics']['maxMemoryUsedMB']
             tenant_platform_report.has_platform_report = True
@@ -151,8 +152,8 @@ def process_function_message(message):
             tenant_platform_report.function_name = function_message['functionName']
             tenant_platform_report.function_version = function_message['functionVersion']
             tenant_platform_report.request_id = function_message['awsRequestId']
-            tenant_platform_report.tenant_id = function_message['tenant_id']
-            # tenant_platform_report.tier = function_message['tier']
+            #TODO: Uncomment the below line to add tenant id into the Cloudwatch
+            #tenant_platform_report.tenant_id = function_message['tenant_id']            
             tenant_platform_report.has_function_logs = True
             emf = log_tenant_platform_report(tenant_platform_report)
         return emf

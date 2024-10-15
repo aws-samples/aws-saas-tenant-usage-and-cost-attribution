@@ -47,7 +47,8 @@ def lambda_handler(event, context):
         logger.info(response)
         principal_id = response["sub"]
         user_name = response["cognito:username"]
-        tenant_id = response["custom:tenantId"]
+        # TODO: Uncomment the below line extract tenant from JWT
+        # tenant_id = response["custom:tenantId"]
         user_role = response["custom:userRole"]
 
         # TODO: Addressing breaking changes, SBT standardizes to "tier" not "tenantTier".
@@ -102,7 +103,8 @@ def lambda_handler(event, context):
             'secretkey': credentials['SecretAccessKey'],
             'sessiontoken': credentials["SessionToken"],
             'userName': user_name,
-            'tenantId': tenant_id,
+            #TODO: Uncomment the below line to add tenant id to the output of the lambda authorizer.
+            #'tenantId': tenant_id,
             'idpDetials': str(idp_details),
             'userRole': user_role,
             'tenantTier': tenant_tier
@@ -110,7 +112,8 @@ def lambda_handler(event, context):
     else:
         context = {
             'userName': user_name,
-            'tenantId': tenant_id,
+            #TODO: Uncomment the below line to add tenant id to the output of the lambda authorizer.
+            #'tenantId': tenant_id,
             'idpDetials': str(idp_details),
             'userRole': user_role,
             'tenantTier': tenant_tier

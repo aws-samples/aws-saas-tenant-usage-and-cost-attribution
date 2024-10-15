@@ -77,10 +77,11 @@ class FineGrainedAggregator(IAggregator):
         return tenant_usage
 
     def aggregate_tenant_usage(self, start_date_time, end_date_time) -> dict:
-        usage_by_tenant_query = "fields _aws.Timestamp, tenant_id, function_name, billed_duration_ms, consumed_capacity.CapacityUnits "
-        usage_by_tenant_query += "| filter ispresent(function_name)"
-        usage_by_tenant_query += "| stats sum(billed_duration_ms) as total_billed_duration, sum(consumed_capacity.CapacityUnits) as total_capacity_units by tenant_id, dateceil(_aws.Timestamp, 1d) as date"
-        usage_by_tenant_query += "| sort by tenant_id "
+        #TODO: Uncomment the below cloudwatch insight query which aggregates the duration and capacity units by tenant 
+        #usage_by_tenant_query = "fields _aws.Timestamp, tenant_id, function_name, billed_duration_ms, consumed_capacity.CapacityUnits "
+        #usage_by_tenant_query += "| filter ispresent(function_name)"
+        #usage_by_tenant_query += "| stats sum(billed_duration_ms) as total_billed_duration, sum(consumed_capacity.CapacityUnits) as total_capacity_units by tenant_id, dateceil(_aws.Timestamp, 1d) as date"
+        #usage_by_tenant_query += "| sort by tenant_id "
 
         usage_by_tenant = query_cloudwatch_logs(logs, "serverless-services-log-group",
                                                 usage_by_tenant_query, start_date_time, end_date_time)
