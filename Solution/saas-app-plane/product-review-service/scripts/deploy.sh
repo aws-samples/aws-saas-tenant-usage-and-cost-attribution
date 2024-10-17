@@ -16,7 +16,8 @@ npm run build
 
 npx cdk deploy "ProductReviewAppStack" --app "npx ts-node bin/product-review-app.ts" --require-approval never 
 
-IMAGE_VERSION=35
+IMAGE_VERSION=$(date +%s)
+echo "IMAGE_VERSION: ${IMAGE_VERSION}"
 
 cd ../src
 
@@ -51,4 +52,4 @@ echo "API_ID: $API_ID"
 aws apigateway create-deployment \
   --rest-api-id "$API_ID" \
   --stage-name prod \
-  --description "Product Media services deployment."
+  --description "Product review services deployment."

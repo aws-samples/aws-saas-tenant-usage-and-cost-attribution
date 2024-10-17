@@ -72,11 +72,11 @@ class FineGrainedAggregator(IAggregator):
         return tenant_usage
 
     def aggregate_tenant_usage(self, start_date_time, end_date_time) -> dict:
-         
-        usage_by_tenant_query = "fields Tenant, dateceil(@timestamp, 1d) as date , ServiceName, _aws.CloudWatchMetrics.0.Metrics.0.Name"
-        usage_by_tenant_query += "| filter ispresent(ExecutionTime)"
-        usage_by_tenant_query += "| stats sum(ExecutionTime) as ExecutionTime by Tenant, date, ServiceName"
-        usage_by_tenant_query += "| sort by Tenant" 
+        #TODO: Uncomment the below lines to aggregate the Execution time 
+        #usage_by_tenant_query = "fields Tenant, dateceil(@timestamp, 1d) as date , ServiceName, _aws.CloudWatchMetrics.0.Metrics.0.Name"
+        #usage_by_tenant_query += "| filter ispresent(ExecutionTime)"
+        #usage_by_tenant_query += "| stats sum(ExecutionTime) as ExecutionTime by Tenant, date, ServiceName"
+        #usage_by_tenant_query += "| sort by Tenant" 
     
 
         usage_by_tenant = query_cloudwatch_logs(logs, ecs_log_group,

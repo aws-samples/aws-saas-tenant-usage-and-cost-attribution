@@ -90,7 +90,7 @@ for TENANT_USER in "${TENANT_USER_ARRAY[@]}"; do
     --query 'AuthenticationResult.IdToken' \
     --output text)
   echo "Login with user TENANT_TOKEN: $TENANT_TOKEN"
-  ITERATOR=1
+  ITERATOR=10
   # Create product review
   for i in $(seq 1 $ITERATOR); do
     echo "Adding review $i"

@@ -25,7 +25,7 @@ class ProductReviewRepository():
             # set role not required as we have connection pool per tenant model
             # cursor.execute("SET role = %s", (str(tenant_id),))
             self.logger.info("Thread going to sleep for 1 second so to generate good data for db load")
-            cursor.execute("SELECT pg_sleep(2)")
+            cursor.execute("SELECT pg_sleep(1)")
             cursor.execute("SELECT * FROM app.product_reviews")
             results = cursor.fetchall()
             
@@ -63,7 +63,7 @@ class ProductReviewRepository():
             # set role not required as we have connection pool per tenant model
             # cursor.execute("SET role = %s", (str(json_reviews['tenant_id']),))
             self.logger.info("Thread going to sleep for 1 second so to generate good data for db load")
-            cursor.execute("SELECT pg_sleep(2)")
+            cursor.execute("SELECT pg_sleep(1)")
             cursor.execute("INSERT INTO app.product_reviews (review_id, product_id, order_id, rating, review_description, tenant_id) VALUES (%s, %s, %s, %s, %s, %s)", 
                 (json_reviews['review_id'], json_reviews['product_id'], json_reviews['order_id'], json_reviews['rating'], json_reviews['review_description'], json_reviews['tenant_id']))
             recordsAdded = cursor.rowcount
@@ -93,7 +93,7 @@ class ProductReviewRepository():
             # set role not required as we have connection pool per tenant model
             # cursor.execute("SET role = %s", (str(review.tenant_id),))
             self.logger.info("Thread going to sleep for 1 second so to generate good data for db load")
-            cursor.execute("SELECT pg_sleep(2)")
+            cursor.execute("SELECT pg_sleep(1)")
             cursor.execute("UPDATE app.product_reviews SET rating = %s, review_description = %s WHERE review_id = %s AND tenant_id = %s",
                 (review.rating, review.review_description, review.review_id, review.tenant_id))
             recordsUpdated = cursor.rowcount
@@ -121,7 +121,7 @@ class ProductReviewRepository():
             # set role not required as we have connection pool per tenant model
             # cursor.execute("SET role = %s", (str(tenant_id),))
             self.logger.info("Thread going to sleep for 1 second so to generate good data for db load")
-            cursor.execute("SELECT pg_sleep(2)")
+            cursor.execute("SELECT pg_sleep(1)")
             cursor.execute("DELETE FROM app.product_reviews WHERE review_id = %s AND tenant_id = %s", (review_id, tenant_id))
             recordsDeleted = cursor.rowcount
             db_conn.commit()

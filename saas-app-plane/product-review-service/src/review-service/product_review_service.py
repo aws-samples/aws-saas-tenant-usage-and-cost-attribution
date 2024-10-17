@@ -51,7 +51,10 @@ def get_reviews():
         app.logger.info(f"Retrieved {len(reviews_response)} reviews for tenant: {tenant_id}")
         end_time = time.time()  # Record the end time
         execution_time = end_time - start_time  # Calculate the execution time
+        
+        #TODO: review below line which logs execution time. 
         asyncio.run(create_emf_log(tenant_id, "ExecutionTime", execution_time, "Seconds"))
+
         return jsonify(reviews_response) # Return reviews as JSON response 
     
     except Exception as e:

@@ -74,7 +74,7 @@ for TENANT_USER in "${TENANT_USER_ARRAY[@]}"; do
     --query 'AuthenticationResult.IdToken' \
     --output text)
 
-  ITERATOR=100
+  ITERATOR=10
 
   # Create products
   for i in $(seq 1 $ITERATOR); do
