@@ -70,15 +70,15 @@ def lambda_handler(event, context):
     
             }
         ]
-        # for loop to iterate over the last 1 hour with iteration_end_time decrementing by a minute every time and start_time is a minute earlier than iteration_end_time
+        # for loop to iterate over the last 24 hour with iteration_end_time decrementing by a minute every time and start_time is a minute earlier than iteration_end_time
         end_time = datetime.utcnow()
-        start_of_hour = end_time - timedelta(hours=1)
+        start_of_hour = end_time - timedelta(hours=24)
         tenant_daily_load = []
         total_usage=0.0
         total_tenant_db_load= {}
         # 60 mins iteration starts
-        print('60 mins iteration starts new')
-        for i in range(60):  # 60 iterations, one for each minute in the last hour
+        print('60x24 mins iteration starts new')
+        for i in range(1440):  # 60x24 iterations, one for each minute in the last 24 hour
             iteration_end_time = end_time - timedelta(minutes=i)
             start_time = iteration_end_time - timedelta(minutes=1)
             
@@ -147,7 +147,7 @@ def lambda_handler(event, context):
                 tenant_usage += sum_db_load ### tenants dbload for the period = sum of all samples
                 print(f'tenant_usage: {tenant_usage}')
                 total_tenant_db_load[tenant_id] = tenant_usage
-        # 60 mins iteration end
+        # 60x24 mins iteration end
         print(f'total_tenant_db_load: {total_tenant_db_load}')
         print('60 mins iteration end')
         print('Report generation and writing start')

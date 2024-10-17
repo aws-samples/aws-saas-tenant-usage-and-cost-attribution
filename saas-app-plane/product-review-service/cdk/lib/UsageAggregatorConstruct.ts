@@ -53,6 +53,7 @@ export class UsageAggregator extends Construct {
         aggregatorLambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'));
         aggregatorLambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaVPCAccessExecutionRole'));
         aggregatorLambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonRDSReadOnlyAccess'));
+        aggregatorLambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonRDSPerformanceInsightsReadOnly'));
         // TODO restrict S3 access only for the specific buckets
         aggregatorLambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonS3FullAccess'));
         aggregatorLambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('CloudWatchLogsFullAccess'));
@@ -80,7 +81,7 @@ export class UsageAggregator extends Construct {
                 PRODUCT_REVIEW_DB_NAME: props.productReviewDBName
             },
             role: aggregatorLambdaRole,
-            timeout: Duration.seconds(60),
+            timeout: Duration.minutes(10),
             memorySize: 512
         });
 
@@ -105,7 +106,7 @@ export class UsageAggregator extends Construct {
                 PRODUCT_REVIEW_DB_NAME: props.productReviewDBName
             },
             role: aggregatorLambdaRole,
-            timeout: Duration.seconds(60),
+            timeout: Duration.minutes(10),
             memorySize: 512
 
         });
@@ -128,7 +129,7 @@ export class UsageAggregator extends Construct {
                 DB_IDENTIFIER: props.rdsInstanceIdentifier
             },
             role: aggregatorLambdaRole,
-            timeout: Duration.seconds(60),
+            timeout: Duration.minutes(10),
             memorySize: 512
         });
 
@@ -150,7 +151,7 @@ export class UsageAggregator extends Construct {
                 ECS_CLOUDWATCH_LOG_GROUP: 'ProductReviewLogGroup'
             },
             role: aggregatorLambdaRole,
-            timeout: Duration.seconds(60),
+            timeout: Duration.minutes(10),
             memorySize: 512
         });
 
