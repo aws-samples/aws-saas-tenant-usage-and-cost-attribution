@@ -1,6 +1,7 @@
 from i_aggregator import IAggregator
 import boto3
 import os
+from datetime import datetime
 
 from utils.aggregator_util import (
     query_cloudwatch_logs,
@@ -40,7 +41,10 @@ class FineGrainedAggregator(IAggregator):
         date = ''
         tenant_total_billed_duration = 0
         tenant_total_capacity_units = 0
-
+        # Get current date and time
+        current_datetime = datetime.utcnow()
+        # Convert to string in a formats
+        timestamp_of_report_creation = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
         # Calculate totals first.
         for result in usage_by_tenant['results']:
             for field in result:
@@ -62,13 +66,13 @@ class FineGrainedAggregator(IAggregator):
                     tenant_total_capacity_units = float(field['value'])
 
             # DynamoDB CapacityUnits.
-            tenant_usage.append({"tenant_id": tenant_id, "date": date, "usage_unit": "ConsumedCapacity",
+            tenant_usage.append({"tenant_id": tenant_id, "date": timestamp_of_report_creation, "usage_unit": "ConsumedCapacity",
                                  "service_name": "AmazonDynamoDB",
                                  "tenant_usage": tenant_total_capacity_units, "total_usage": total_capacity_units,
                                  "tenant_percent_usage": (tenant_total_capacity_units / total_capacity_units) * 100})
 
             # Lambda billed_duration_ms.
-            tenant_usage.append({"tenant_id": tenant_id, "date": date, "usage_unit": "billed_duration_ms",
+            tenant_usage.append({"tenant_id": tenant_id, "date": timestamp_of_report_creation, "usage_unit": "billed_duration_ms",
                                  "service_name": "AWSLambda",
                                  "tenant_usage": tenant_total_billed_duration, "total_usage": total_billed_duration,
                                  "tenant_percent_usage": round(
@@ -80,7 +84,7 @@ class FineGrainedAggregator(IAggregator):
         #TODO: Uncomment the below cloudwatch insight query which aggregates the duration and capacity units by tenant 
         #usage_by_tenant_query = "fields _aws.Timestamp, tenant_id, function_name, billed_duration_ms, consumed_capacity.CapacityUnits "
         #usage_by_tenant_query += "| filter ispresent(function_name)"
-        #usage_by_tenant_query += "| stats sum(billed_duration_ms) as total_billed_duration, sum(consumed_capacity.CapacityUnits) as total_capacity_units by tenant_id, dateceil(_aws.Timestamp, 1d) as date"
+        #usage_by_tenant_query += "| stats sum(billed_duration_ms) as total_billed_duration, sum(consumed_capacity.CapacityUnits) as total_capacity_units by tenant_id, datefloor(_aws.Timestamp, 1d) as date"
         #usage_by_tenant_query += "| sort by tenant_id "
 
         usage_by_tenant = query_cloudwatch_logs(logs, "serverless-services-log-group",
