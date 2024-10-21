@@ -4,7 +4,7 @@
 import boto3
 import os
 from decimal import *
-import datetime
+from datetime import datetime
 import json
 import psycopg
 from psycopg.rows import dict_row
@@ -68,7 +68,10 @@ def lambda_handler(event, context):
             print(results)
         # Upload the results to an S3 bucket as a CSV file
         # get current timestamp value as string 
-        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")     
+        # Get current date and time
+        current_datetime = datetime.utcnow()
+        # Convert to string in a formats
+        timestamp_of_report_creation = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
         total_usage_execution_time = 0.0
         total_shared_blks_written_read = 0.0
         
@@ -92,16 +95,20 @@ def lambda_handler(event, context):
             tenant_usage_read_write_block = float(row['shared_blks_read'] + row['shared_blks_written'])
             print('tenant_usage_execution_time',tenant_usage_execution_time)
             print('tenant_usage_read_write_block',tenant_usage_read_write_block)
-            tenant_aurora_usage.append({"tenant_id": tenant_id, "date": timestamp, "usage_unit": "execution_duration_ms",
+            # check if total_usage_execution_time is zero to avoid division by zero error
+            if total_usage_execution_time == 0:
+                total_usage_execution_time = 1
+            tenant_aurora_usage.append({"tenant_id": tenant_id, "date": timestamp_of_report_creation, "usage_unit": "execution_duration_ms",
                 "service_name": "Aurora", 
                 "tenant_usage": tenant_usage_execution_time,
                 "total_usage": total_usage_execution_time,
                 "tenant_percent_usage": round((tenant_usage_execution_time / total_usage_execution_time) *100)
             })
-            
             print('percentage:',(tenant_usage_execution_time / total_usage_execution_time) *100)
-            
-            tenant_aurora_usage.append({"tenant_id": tenant_id, "date": timestamp, "usage_unit": "Blocks",
+            # check if total_shared_blks_written_read is zero to avoid division by zero error
+            if total_shared_blks_written_read == 0:
+                total_shared_blks_written_read = 1
+            tenant_aurora_usage.append({"tenant_id": tenant_id, "date": timestamp_of_report_creation, "usage_unit": "Blocks",
                 "service_name": "Aurora", 
                 "tenant_usage": tenant_usage_read_write_block,
                 "total_usage": total_shared_blks_written_read,

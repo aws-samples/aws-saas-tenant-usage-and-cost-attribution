@@ -117,16 +117,20 @@ def lambda_handler(event, context):
       
             # Create the JSON data
             json_data = []
+            # Get current date and time
+            current_datetime = datetime.utcnow()
+            # Convert to string in a formats
+            timestamp_of_report_creation = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
             for tenant_id, total_tenant_data_size in total_tenant_data_sizes.items():
                 tenant_data_size_portion_percentage = (tenant_data_size_portions[tenant_id] / total_tenant_data_size) * 100
                 json_data.append({
                     "tenant_id": tenant_id,
-                    "date": str(datetime.now().date()),
+                    "date": timestamp_of_report_creation,
                     "service_name": "Aurora",
                     "usage_unit": "DataSize",
                     "tenant_usage": tenant_data_size_portions[tenant_id],
-                    "total_tenant_data_size": total_tenant_data_size,
-                    "tenant_data_size_portion_percentage": tenant_data_size_portion_percentage
+                    "total_usage": total_tenant_data_size,
+                    "tenant_percent_usage": tenant_data_size_portion_percentage
                 })
     
         # Upload the JSON data to an S3 bucket    

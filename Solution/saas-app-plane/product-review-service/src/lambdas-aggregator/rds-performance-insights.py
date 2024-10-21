@@ -113,6 +113,10 @@ def lambda_handler(event, context):
                     continue
                 user = metric_query['Key']['Dimensions']['db.user.name']
                 print(f'User: {user}')
+                # check if user is either saasadmin or rdsadmin if so continue
+                if user == 'saasadmin' or user == 'rdsadmin':
+                    print(f'Skip data point collection as it is DB admin user: {user}')
+                    continue
                 if 'DataPoints' not in metric_query:
                     print(f'DataPoints')
                     continue
@@ -149,7 +153,7 @@ def lambda_handler(event, context):
                 total_tenant_db_load[tenant_id] = tenant_usage
         # 60x24 mins iteration end
         print(f'total_tenant_db_load: {total_tenant_db_load}')
-        print('60 mins iteration end')
+        print('60x24 mins iteration end')
         print('Report generation and writing start')
         usage_unit = "dbload_average_active_sessions"
         service_name = "Aurora"
@@ -160,7 +164,7 @@ def lambda_handler(event, context):
             total_usage += final_tenant_usage  ## add the DB load per tenant to calculaete attribution %
         print(f'total_usage: {total_usage}')
         # Get current date and time
-        current_datetime = datetime.now()
+        current_datetime = datetime.utcnow()
         # Convert to string in a formats
         timestamp_of_report_creation = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
         for tenant_id, report_tenant_usage in total_tenant_db_load.items():

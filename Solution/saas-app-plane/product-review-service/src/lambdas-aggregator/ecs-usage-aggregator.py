@@ -44,7 +44,10 @@ class FineGrainedAggregator(IAggregator):
         tenant_id = ''
         date = ''
         tenant_total_billed_duration = 0
-        
+        # Get current date and time
+        current_datetime = datetime.utcnow()
+        # Convert to string in a formats
+        timestamp_of_report_creation = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
         # Calculate totals first.
         for result in usage_by_tenant['results']:
             for field in result:
@@ -63,7 +66,7 @@ class FineGrainedAggregator(IAggregator):
                     tenant_total_billed_duration += float(field['value'])
                 
             # ECS billed_duration_ms.
-            tenant_usage.append({"tenant_id": tenant_id, "date": date, "usage_unit": "ExecutionDuration",
+            tenant_usage.append({"tenant_id": tenant_id, "date": timestamp_of_report_creation, "usage_unit": "ExecutionDuration",
                                  "service_name": "ECS",
                                  "tenant_usage": tenant_total_billed_duration, "total_usage": total_billed_duration,
                                  "tenant_percent_usage": round(
@@ -73,7 +76,7 @@ class FineGrainedAggregator(IAggregator):
 
     def aggregate_tenant_usage(self, start_date_time, end_date_time) -> dict:
          
-        usage_by_tenant_query = "fields Tenant, dateceil(@timestamp, 1d) as date , ServiceName, _aws.CloudWatchMetrics.0.Metrics.0.Name"
+        usage_by_tenant_query = "fields Tenant, datefloor(@timestamp, 1d) as date , ServiceName, _aws.CloudWatchMetrics.0.Metrics.0.Name"
         usage_by_tenant_query += "| filter ispresent(ExecutionTime)"
         usage_by_tenant_query += "| stats sum(ExecutionTime) as ExecutionTime by Tenant, date, ServiceName"
         usage_by_tenant_query += "| sort by Tenant" 

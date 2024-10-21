@@ -20,9 +20,9 @@ echo "Tenant Usage Bucket: $TENANT_USAGE_BUCKET"
 
 aws lambda invoke --function-name $COARSE_GRAINED_AGGREGATOR out.json
 aws lambda invoke --function-name $FINE_GRAINED_AGGREGATOR out.json
-aws lambda invoke --function-name $RDS_PERFORMANCE_INSIGHTS_DB_LOAD_AGGREGATOR --cli-read-timeout 600 --cli-connect-timeout 600 out.json
 aws lambda invoke --function-name $RDS_AURORA_IOPS_EXECUTION_TIME_AGGREGATOR out.json
 aws lambda invoke --function-name $RDS_AURORA_STORAGE_AGGREGATOR out.json
+aws lambda invoke --function-name $RDS_PERFORMANCE_INSIGHTS_DB_LOAD_AGGREGATOR --cli-read-timeout 600 --cli-connect-timeout 600 out.json
 
 
 echo "Checking if the results were saved in S3"
