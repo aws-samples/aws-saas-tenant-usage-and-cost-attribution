@@ -1,5 +1,5 @@
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time as time_obj
 from decimal import *
 import json
 
@@ -31,6 +31,20 @@ def get_end_date_time():
     end_date_time = int((datetime.now(tz=time_zone) + timedelta(days=1)).date().strftime('%s'))  # next day epoch
     return end_date_time
 
+def get_formatted_start_of_day(input_date=None):
+    if input_date is None:
+        input_date = datetime.now().date()
+    # If a datetime object is provided, extract the date
+    elif isinstance(input_date, datetime):
+        input_date = input_date.date()
+    
+    # Combine the date with midnight time
+    start_of_day = datetime.combine(input_date, time_obj.min)
+    
+    # Format the datetime
+    formatted_date = start_of_day.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+    
+    return formatted_date
 
 def get_s3_key(prefix, service):
     # Get the current date and time.

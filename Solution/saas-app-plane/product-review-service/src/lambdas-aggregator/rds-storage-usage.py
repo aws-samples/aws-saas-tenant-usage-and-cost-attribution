@@ -7,7 +7,8 @@ import csv, json
 from datetime import datetime
 from utils.aggregator_util import (
     get_s3_key,
-    get_line_delimited_json
+    get_line_delimited_json,
+    get_formatted_start_of_day
 )
 
 s3 = boto3.client('s3')
@@ -38,6 +39,8 @@ def lambda_handler(event, context):
     s3_bucket = tenant_usage_bucket
     schema = 'app'
     print(db_host,db_name,db_user,db_password,s3_bucket)
+    date = get_formatted_start_of_day()
+    print(date)
     # Connect to the Aurora PostgreSQL database
     try:
         conn = psycopg.connect(
@@ -117,15 +120,11 @@ def lambda_handler(event, context):
       
             # Create the JSON data
             json_data = []
-            # Get current date and time
-            current_datetime = datetime.utcnow()
-            # Convert to string in a formats
-            timestamp_of_report_creation = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
             for tenant_id, total_tenant_data_size in total_tenant_data_sizes.items():
                 tenant_data_size_portion_percentage = (tenant_data_size_portions[tenant_id] / total_tenant_data_size) * 100
                 json_data.append({
                     "tenant_id": tenant_id,
-                    "date": timestamp_of_report_creation,
+                    "date": date,
                     "service_name": "Aurora",
                     "usage_unit": "DataSize",
                     "tenant_usage": tenant_data_size_portions[tenant_id],

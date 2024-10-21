@@ -10,7 +10,8 @@ import psycopg
 from psycopg.rows import dict_row
 from utils.aggregator_util import (
     get_s3_key,
-    get_line_delimited_json
+    get_line_delimited_json,
+    get_formatted_start_of_day
 )
 
 s3 = boto3.client('s3')
@@ -42,8 +43,10 @@ def lambda_handler(event, context):
     db_user = secret_dict['username']
     s3_bucket = tenant_usage_bucket
     print(db_host,db_name,db_user,db_password,s3_bucket)
+    # get the date to be used in the output report
+    date = get_formatted_start_of_day()
+    print(date)
     # Connect to the Aurora PostgreSQL database
-
     try:
         conn = psycopg.connect(
             host=db_host,
@@ -62,16 +65,10 @@ def lambda_handler(event, context):
             where a.userid = b.oid and b.rolname not in ('rdsadmin','postgres', 'saasadmin')
             group by tenant_id, a.userid;
                 """)
-
             # Get the results as a list of dictionaries
             results = cur.fetchall()
             print(results)
         # Upload the results to an S3 bucket as a CSV file
-        # get current timestamp value as string 
-        # Get current date and time
-        current_datetime = datetime.utcnow()
-        # Convert to string in a formats
-        timestamp_of_report_creation = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
         total_usage_execution_time = 0.0
         total_shared_blks_written_read = 0.0
         
@@ -98,7 +95,7 @@ def lambda_handler(event, context):
             # check if total_usage_execution_time is zero to avoid division by zero error
             if total_usage_execution_time == 0:
                 total_usage_execution_time = 1
-            tenant_aurora_usage.append({"tenant_id": tenant_id, "date": timestamp_of_report_creation, "usage_unit": "execution_duration_ms",
+            tenant_aurora_usage.append({"tenant_id": tenant_id, "date": date, "usage_unit": "execution_duration_ms",
                 "service_name": "Aurora", 
                 "tenant_usage": tenant_usage_execution_time,
                 "total_usage": total_usage_execution_time,
@@ -108,7 +105,7 @@ def lambda_handler(event, context):
             # check if total_shared_blks_written_read is zero to avoid division by zero error
             if total_shared_blks_written_read == 0:
                 total_shared_blks_written_read = 1
-            tenant_aurora_usage.append({"tenant_id": tenant_id, "date": timestamp_of_report_creation, "usage_unit": "Blocks",
+            tenant_aurora_usage.append({"tenant_id": tenant_id, "date": date, "usage_unit": "Blocks",
                 "service_name": "Aurora", 
                 "tenant_usage": tenant_usage_read_write_block,
                 "total_usage": total_shared_blks_written_read,
@@ -122,7 +119,11 @@ def lambda_handler(event, context):
                         Key=s3_key,
                         Body=str(tenant_aurora_usage_line_delimited))
                 
-        
+        # now that we have collected the data points we shall do pg_stat_statements_reset() so that to avoid double counting during next run
+        # for lab purposes, this had been commented out. For production scenario, you can un-comment it out
+        # cur.execute("""
+        # SELECT pg_stat_statements_reset();
+        # """)
         return {
             'statusCode': 200,
             'body': f'Data from pg_stat_statements uploaded to S3 at s3://{s3_bucket}/{s3_key}'

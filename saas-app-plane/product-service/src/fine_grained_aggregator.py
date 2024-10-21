@@ -41,10 +41,6 @@ class FineGrainedAggregator(IAggregator):
         date = ''
         tenant_total_billed_duration = 0
         tenant_total_capacity_units = 0
-        # Get current date and time
-        current_datetime = datetime.utcnow()
-        # Convert to string in a formats
-        timestamp_of_report_creation = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
         # Calculate totals first.
         for result in usage_by_tenant['results']:
             for field in result:
@@ -66,13 +62,13 @@ class FineGrainedAggregator(IAggregator):
                     tenant_total_capacity_units = float(field['value'])
 
             # DynamoDB CapacityUnits.
-            tenant_usage.append({"tenant_id": tenant_id, "date": timestamp_of_report_creation, "usage_unit": "ConsumedCapacity",
+            tenant_usage.append({"tenant_id": tenant_id, "date": date, "usage_unit": "ConsumedCapacity",
                                  "service_name": "AmazonDynamoDB",
                                  "tenant_usage": tenant_total_capacity_units, "total_usage": total_capacity_units,
                                  "tenant_percent_usage": (tenant_total_capacity_units / total_capacity_units) * 100})
 
             # Lambda billed_duration_ms.
-            tenant_usage.append({"tenant_id": tenant_id, "date": timestamp_of_report_creation, "usage_unit": "billed_duration_ms",
+            tenant_usage.append({"tenant_id": tenant_id, "date": date, "usage_unit": "billed_duration_ms",
                                  "service_name": "AWSLambda",
                                  "tenant_usage": tenant_total_billed_duration, "total_usage": total_billed_duration,
                                  "tenant_percent_usage": round(
