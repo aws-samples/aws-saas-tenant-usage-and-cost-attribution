@@ -15,6 +15,11 @@ npm run build
 # Executing the ApplicationPlaneStack CDK stack to create ECS Cluster, ALB, S3 Bucket, ECR, Parameter Store, APIGW Resource
 cdk deploy --all --require-approval never --concurrency 10 --asset-parallelism true
 
+TENANT_USAGE_BUCKET=$(aws cloudformation describe-stacks --stack-name $SHARED_SERVICES_STACK_NAME --query "Stacks[0].Outputs[?ExportName=='TenantUsageBucketName'].OutputValue" --output text)
+# Create a prefix in TENANT_USAGE_BUCKET
+aws s3api put-object --bucket $TENANT_USAGE_BUCKET --key s3_storage_lens_report/ 
+
+
 # Building the code and preparing Product Media Docker Image
 cd ../src
 docker build --platform linux/amd64 -f resources/dockerfile -t product-media-service:latest .

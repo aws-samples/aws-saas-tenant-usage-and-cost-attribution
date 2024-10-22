@@ -1,1 +1,1 @@
-{"statusCode": 200, "body": "Tenant storage usage data uploaded to S3 at s3://sharedservicesstack-tenantusagebucket3870349d-gmnu1f34jnzb/fine_grained/year=2024/month=10/product-review-db-storage-usage_by_tenant-10-18-2024.json"}
+{"statusCode": 200, "body": "Data from pg_stat_statements uploaded to S3 at s3://sharedservicesstack-tenantusagebucket3870349d-gmnu1f34jnzb/fine_grained/year=2024/month=10/product-review-aurora_dbload_by_tenant-usage_by_tenant-10-22-2024.json"}

@@ -74,7 +74,7 @@ for TENANT_USER in "${TENANT_USER_ARRAY[@]}"; do
     --query 'AuthenticationResult.IdToken' \
     --output text)
 
-  ITERATOR=10
+  ITERATOR=20
 
   # Create products
   for i in $(seq 1 $ITERATOR); do
@@ -97,32 +97,32 @@ for TENANT_USER in "${TENANT_USER_ARRAY[@]}"; do
 
   echo "Success GET all products: ${response}"
 
-  # Parse the JSON response and loop through each product
-  echo "$response" | jq -c '.[]' | while read -r product; do
-    shard_id=$(echo "$product" | jq -r '.shardId')
-    product_id=$(echo "$product" | jq -r '.productId')
-    shard_product="${shard_id}:${product_id}"
+  # # Parse the JSON response and loop through each product
+  # echo "$response" | jq -c '.[]' | while read -r product; do
+  #   shard_id=$(echo "$product" | jq -r '.shardId')
+  #   product_id=$(echo "$product" | jq -r '.productId')
+  #   shard_product="${shard_id}:${product_id}"
 
-    # Get and update each product
-    echo "GET product: ${shard_product}"
+  #   # Get and update each product
+  #   echo "GET product: ${shard_product}"
     
-    product_response=$(curl -s --request GET \
-      --url "${SERVERLESS_SAAS_API_GATEWAY_URL}product/${shard_product}" \
-      --header "Authorization: Bearer ${TENANT_TOKEN}" \
-      --header 'x-service-identifier: ProductService' \
-      --header 'content-type: application/json')
-    # Extract properties from the product response
-    product_name=$(echo "$product_response" | jq -r '.name')
-    updated_name="${product_name}-updated"
+  #   product_response=$(curl -s --request GET \
+  #     --url "${SERVERLESS_SAAS_API_GATEWAY_URL}product/${shard_product}" \
+  #     --header "Authorization: Bearer ${TENANT_TOKEN}" \
+  #     --header 'x-service-identifier: ProductService' \
+  #     --header 'content-type: application/json')
+  #   # Extract properties from the product response
+  #   product_name=$(echo "$product_response" | jq -r '.name')
+  #   updated_name="${product_name}-updated"
 
-    echo "PUT product: ${shard_product}"
-    curl --request PUT \
-      --url "${SERVERLESS_SAAS_API_GATEWAY_URL}product/${shard_product}" \
-      --header "Authorization: Bearer ${TENANT_TOKEN}" \
-      --header 'x-service-identifier: ProductService' \
-      --header 'content-type: application/json' \
-      --data "{\"name\":\"${updated_name}\",\"price\":100,\"sku\":\"2\",\"category\":\"category-update\"}"
-  done
+  #   echo "PUT product: ${shard_product}"
+  #   curl --request PUT \
+  #     --url "${SERVERLESS_SAAS_API_GATEWAY_URL}product/${shard_product}" \
+  #     --header "Authorization: Bearer ${TENANT_TOKEN}" \
+  #     --header 'x-service-identifier: ProductService' \
+  #     --header 'content-type: application/json' \
+  #     --data "{\"name\":\"${updated_name}\",\"price\":100,\"sku\":\"2\",\"category\":\"category-update\"}"
+  # done
 
   # Create orders
   for i in $(seq 1 $ITERATOR); do
@@ -149,16 +149,16 @@ for TENANT_USER in "${TENANT_USER_ARRAY[@]}"; do
   echo "Success GET all orders: ${orders_response}"
 
   # Parse the JSON response and loop through each order
-  echo "$orders_response" | jq -c '.[]' | while read -r order; do
-    key=$(echo "$key" | jq -r '.key')
+  # echo "$orders_response" | jq -c '.[]' | while read -r order; do
+  #   key=$(echo "$key" | jq -r '.key')
 
-    # Get and update each order
-    echo "GET order: ${key}"
-    curl --request GET \
-      --url "${SERVERLESS_SAAS_API_GATEWAY_URL}order/${key}" \
-      --header "Authorization: Bearer ${TENANT_TOKEN}" \
-      --header 'x-service-identifier: ProductService' \
-      --header 'content-type: application/json'
-    echo    
-  done
+  #   # Get and update each order
+  #   echo "GET order: ${key}"
+  #   curl --request GET \
+  #     --url "${SERVERLESS_SAAS_API_GATEWAY_URL}order/${key}" \
+  #     --header "Authorization: Bearer ${TENANT_TOKEN}" \
+  #     --header 'x-service-identifier: ProductService' \
+  #     --header 'content-type: application/json'
+  #   echo    
+  # done
 done
