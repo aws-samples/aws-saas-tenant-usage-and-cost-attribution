@@ -62,11 +62,11 @@ class FineGrainedAggregator(IAggregator):
                     tenant_total_billed_duration += float(field['value'])
                 
             # ECS billed_duration_ms.
-            tenant_usage.append({"tenant_id": tenant_id, "date": date, "usage_unit": "ExecutionDuration",
-                                 "service_name": "ECS",
-                                 "tenant_usage": tenant_total_billed_duration, "total_usage": total_billed_duration,
+            tenant_usage.append({"tenant_id": tenant_id, "date": date, "usage_unit": "execution_duration_seconds",
+                                 "service_name": "AmazonECS",
+                                 "tenant_usage": round(tenant_total_billed_duration, 1), "total_usage": round(total_billed_duration, 1),
                                  "tenant_percent_usage": round(
-                                     (tenant_total_billed_duration / total_billed_duration) * 100)})
+                                     (tenant_total_billed_duration / total_billed_duration) * 100, 1)})
 
         return tenant_usage
 

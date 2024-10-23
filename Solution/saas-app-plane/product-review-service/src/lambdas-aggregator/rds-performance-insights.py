@@ -125,8 +125,8 @@ def lambda_handler(event, context):
         print(f'total_tenant_db_load: {total_tenant_db_load}')
         print('60x24 mins iteration end')
         print('Report generation and writing start')
-        usage_unit = "dbload_average_active_sessions"
-        service_name = "Aurora"
+        usage_unit = "dbload_active_sessions"
+        service_name = "AmazonRDS"
         # sum all the tenant_usage to overall total so to calculate the percentage attribution of each tenant
         total_usage=0.0
         for tenant_id, final_tenant_usage in total_tenant_db_load.items():

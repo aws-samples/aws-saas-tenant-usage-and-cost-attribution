@@ -64,15 +64,15 @@ class FineGrainedAggregator(IAggregator):
             # DynamoDB CapacityUnits.
             tenant_usage.append({"tenant_id": tenant_id, "date": date, "usage_unit": "ConsumedCapacity",
                                  "service_name": "AmazonDynamoDB",
-                                 "tenant_usage": tenant_total_capacity_units, "total_usage": total_capacity_units,
-                                 "tenant_percent_usage": (tenant_total_capacity_units / total_capacity_units) * 100})
+                                 "tenant_usage": round(tenant_total_capacity_units, 1), "total_usage": round(total_capacity_units, 1),
+                                 "tenant_percent_usage": round((tenant_total_capacity_units / total_capacity_units) * 100, 1)})
 
             # Lambda billed_duration_ms.
             tenant_usage.append({"tenant_id": tenant_id, "date": date, "usage_unit": "billed_duration_ms",
                                  "service_name": "AWSLambda",
-                                 "tenant_usage": tenant_total_billed_duration, "total_usage": total_billed_duration,
+                                 "tenant_usage": round(tenant_total_billed_duration, 1), "total_usage": round(total_billed_duration, 1),
                                  "tenant_percent_usage": round(
-                                     (tenant_total_billed_duration / total_billed_duration) * 100)})
+                                     (tenant_total_billed_duration / total_billed_duration) * 100, 1)})
 
         return tenant_usage
 

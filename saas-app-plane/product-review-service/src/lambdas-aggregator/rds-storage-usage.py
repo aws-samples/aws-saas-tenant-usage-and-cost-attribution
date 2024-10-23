@@ -121,15 +121,15 @@ def lambda_handler(event, context):
             # Create the JSON data
             json_data = []
             for tenant_id, total_tenant_data_size in total_tenant_data_sizes.items():
-                tenant_data_size_portion_percentage = (tenant_data_size_portions[tenant_id] / total_tenant_data_size) * 100
+                tenant_data_size_portion_percentage = round((tenant_data_size_portions[tenant_id] / total_tenant_data_size) * 100, 1)
                 json_data.append({
                     "tenant_id": tenant_id,
                     "date": date,
-                    "service_name": "Aurora",
-                    "usage_unit": "DataSize",
-                    "tenant_usage": tenant_data_size_portions[tenant_id],
-                    "total_usage": total_tenant_data_size,
-                    "tenant_percent_usage": tenant_data_size_portion_percentage
+                    "service_name": "AmazonRDS",
+                    "usage_unit": "tenant_data_size",
+                    "tenant_usage": round(tenant_data_size_portions[tenant_id], 1),
+                    "total_usage": round(total_tenant_data_size, 1),
+                    "tenant_percent_usage": round(tenant_data_size_portion_percentage, 1)
                 })
     
         # Upload the JSON data to an S3 bucket    

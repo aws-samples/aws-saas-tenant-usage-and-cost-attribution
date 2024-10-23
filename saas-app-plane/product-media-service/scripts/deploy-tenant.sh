@@ -32,12 +32,7 @@ npm install
 # Executing the ApplicationPlaneStack CDK stack to create ECS Cluster, ALB, S3 Bucket, ECR, Parameter Store, APIGW Resource
 npx cdk deploy "ProductMediaTenantStack-${TENANT_ID}" --require-approval never --concurrency 10 --asset-parallelism true
 
-API_ID=$(
-  aws cloudformation describe-stacks \
-    --stack-name $SHARED_SERVICES_STACK_NAME \
-    --query "Stacks[0].Outputs[?contains(OutputKey,'AppPlaneApiGatewayId')].OutputValue" \
-    --output text
-)
-echo "API_ID: $API_ID"
 cd ../scripts
 echo $PRIORITY_BASE
+# Enable the TenantId cost allocation tag
+aws ce update-cost-allocation-tags-status --cost-allocation-tags-status TagKey=TenantId,Status=Active

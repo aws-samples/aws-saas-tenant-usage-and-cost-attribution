@@ -48,6 +48,8 @@ done
 # Print the total number of users
 echo "Total number of users across all tenants: ${#TENANT_USER_ARRAY[@]}"
 TEMP_TENANT_PASSWORD='#CostPerTenant1234'
+# INCREMENT ITERATOR SO THAT FOR NEXT TENANT THE LOAD WILL BE DIFFERENT
+ITERATION_INCREMENT=0
 for TENANT_USER in "${TENANT_USER_ARRAY[@]}"; do
   echo "Creating data for Test User: $TENANT_USER"
 
@@ -83,7 +85,9 @@ for TENANT_USER in "${TENANT_USER_ARRAY[@]}"; do
   TENANT_ID=$(echo "$TENANT_USER" | sed 's/tenant-admin-//')
   echo "Uploading media to S3 for TENANT_ID: ${TENANT_ID}"
 
-  ITERATOR=5
+  ITERATOR=$((ITERATION_INCREMENT + 10))
+  # INCREMENT ITERATOR SO THAT FOR NEXT TENANT THE LOAD WILL BE DIFFERENT
+  ITERATION_INCREMENT=$((ITERATION_INCREMENT + 3))
   for i in $(seq 1 $ITERATOR); do
     PRODUCT_ID="product-${i}"
 

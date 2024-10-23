@@ -96,20 +96,20 @@ def lambda_handler(event, context):
             if total_usage_execution_time == 0:
                 total_usage_execution_time = 1
             tenant_aurora_usage.append({"tenant_id": tenant_id, "date": date, "usage_unit": "execution_duration_ms",
-                "service_name": "Aurora", 
-                "tenant_usage": tenant_usage_execution_time,
-                "total_usage": total_usage_execution_time,
-                "tenant_percent_usage": round((tenant_usage_execution_time / total_usage_execution_time) *100)
+                "service_name": "AmazonRDS", 
+                "tenant_usage": round(tenant_usage_execution_time, 1),
+                "total_usage": round(total_usage_execution_time, 1),
+                "tenant_percent_usage": round((tenant_usage_execution_time / total_usage_execution_time) *100, 1)
             })
             print('percentage:',(tenant_usage_execution_time / total_usage_execution_time) *100)
             # check if total_shared_blks_written_read is zero to avoid division by zero error
             if total_shared_blks_written_read == 0:
                 total_shared_blks_written_read = 1
-            tenant_aurora_usage.append({"tenant_id": tenant_id, "date": date, "usage_unit": "Blocks",
-                "service_name": "Aurora", 
-                "tenant_usage": tenant_usage_read_write_block,
-                "total_usage": total_shared_blks_written_read,
-                "tenant_percent_usage": round((tenant_usage_read_write_block / total_shared_blks_written_read) *100)
+            tenant_aurora_usage.append({"tenant_id": tenant_id, "date": date, "usage_unit": "shared_blks_written_read",
+                "service_name": "AmazonRDS", 
+                "tenant_usage": round(tenant_usage_read_write_block, 1),
+                "total_usage": round(total_shared_blks_written_read, 1),
+                "tenant_percent_usage": round((tenant_usage_read_write_block / total_shared_blks_written_read) *100, 1)
             })
         
         tenant_aurora_usage_line_delimited = get_line_delimited_json(tenant_aurora_usage) 

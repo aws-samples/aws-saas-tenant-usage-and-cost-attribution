@@ -175,5 +175,17 @@ export class TenantProvisionStack extends cdk.Stack {
       ],
       action: elbv2.ListenerAction.forward([targetGroup])
     });
+
+    // Common Tags for all Tenant Specific AWS Resources
+    const commonTags = {
+      TenantId: tenantId,
+      "saas-app-plane": "product-media"
+    };
+    Object.entries(commonTags).forEach(([key, value]) => {
+      Tags.of(targetGroup).add(key, value);
+      Tags.of(taskDefinition).add(key, value);
+      Tags.of(service).add(key, value);
+      Tags.of(targetGroup).add(key, value);
+    });
   }
 }

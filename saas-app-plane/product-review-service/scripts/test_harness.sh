@@ -59,6 +59,8 @@ done
 # Print the total number of users
 echo "Total number of users across all tenants: ${#TENANT_USER_ARRAY[@]}"
 TEMP_TENANT_PASSWORD='#CostPerTenant1234'
+# INCREMENT ITERATOR SO THAT FOR NEXT TENANT THE LOAD WILL BE DIFFERENT
+ITERATION_INCREMENT=0
 # loop through the users
 for TENANT_USER in "${TENANT_USER_ARRAY[@]}"; do
   echo "Creating data for Test User: $TENANT_USER"
@@ -90,7 +92,10 @@ for TENANT_USER in "${TENANT_USER_ARRAY[@]}"; do
     --query 'AuthenticationResult.IdToken' \
     --output text)
   echo "Login with user TENANT_TOKEN: $TENANT_TOKEN"
-  ITERATOR=10
+  ITERATOR=$((ITERATION_INCREMENT + 10))
+  # INCREMENT ITERATOR SO THAT FOR NEXT TENANT THE LOAD WILL BE DIFFERENT
+  ITERATION_INCREMENT=$((ITERATION_INCREMENT + 3))
+
   # Create product review
   for i in $(seq 1 $ITERATOR); do
     echo "Adding review $i"
