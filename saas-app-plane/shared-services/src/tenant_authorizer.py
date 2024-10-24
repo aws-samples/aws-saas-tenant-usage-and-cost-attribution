@@ -107,7 +107,8 @@ def lambda_handler(event, context):
             #'tenantId': tenant_id,
             'idpDetials': str(idp_details),
             'userRole': user_role,
-            'tenantTier': tenant_tier
+            'tenantTier': tenant_tier,
+            'feature': service_identifier
         }
     else:
         context = {
@@ -116,7 +117,9 @@ def lambda_handler(event, context):
             #'tenantId': tenant_id,
             'idpDetials': str(idp_details),
             'userRole': user_role,
-            'tenantTier': tenant_tier
+            'tenantTier': tenant_tier,
+            'feature': service_identifier
+
         }
     authResponse['context'] = context
 

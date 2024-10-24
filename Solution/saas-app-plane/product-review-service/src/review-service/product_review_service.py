@@ -7,6 +7,8 @@ import os , json, sys
 import logging
 import asyncio
 import time
+from jose import jwk, jwt
+from jose.utils import base64url_decode
 
 from product_review_dal import ProductReviewRepository, DatabaseError
 from product_review_logger import create_emf_log
@@ -17,6 +19,15 @@ app = Flask(__name__)
 
 app.logger.setLevel(logging.DEBUG)
 app.logger.info("Starting Review Service with connection pool per tenant")
+
+def get_tenant_id(request):
+    bearer_token = request.headers.get('Authorization')
+    if not bearer_token:
+        return None
+    token = bearer_token.split(" ")[1]
+    # get the tenant id from the token
+    tenant_id = jwt.get_unverified_claims(token)['custom:tenantId']
+    return tenant_id
 
 @app.route('/')
 def home():
@@ -35,7 +46,8 @@ def get_reviews():
     start_time = time.time()
 
     # Get the tenantId from req header
-    tenant_id = request.headers.get('tenantId')
+    #tenant_id = request.headers.get('tenantId')
+    tenant_id = get_tenant_id(request)
         
     if tenant_id:
         app.logger.info(f"Tenant Id: {tenant_id}")
@@ -51,7 +63,10 @@ def get_reviews():
         app.logger.info(f"Retrieved {len(reviews_response)} reviews for tenant: {tenant_id}")
         end_time = time.time()  # Record the end time
         execution_time = end_time - start_time  # Calculate the execution time
+        
+        #TODO: review below line which logs execution time. 
         asyncio.run(create_emf_log(tenant_id, "ExecutionTime", execution_time, "Seconds"))
+
         return jsonify(reviews_response) # Return reviews as JSON response 
     
     except Exception as e:
@@ -62,7 +77,9 @@ def get_reviews():
 def add_review():
     start_time = time.time()
     execution_time = 0
-    tenant_id = request.headers.get('tenantId')
+    #tenant_id = request.headers.get('tenantId')
+    tenant_id = get_tenant_id(request)
+
     if tenant_id is None:
         app.logger.error("Tenant ID not found")
         return "Tenant ID not found"
@@ -107,7 +124,8 @@ def update_review(review_id):
     start_time = time.time()
     execution_time = 0
     review_id = request.view_args['review_id'] # Extract review_id from URL path
-    tenant_id = request.headers.get('tenantId')
+    #tenant_id = request.headers.get('tenantId')
+    tenant_id = get_tenant_id(request)
     if tenant_id is None:
         app.logger.error("Tenant ID not found")
         return jsonify({"error": "Tenant ID not found"})
@@ -156,7 +174,8 @@ def update_review(review_id):
 def delete_review(review_id):
     start_time = time.time()
     execution_time = 0
-    tenant_id = request.headers.get('tenantId')
+    #tenant_id = request.headers.get('tenantId')
+    tenant_id = get_tenant_id(request)
     review_id = request.view_args['review_id']
     if tenant_id is None:
         app.logger.error("Tenant ID not found")

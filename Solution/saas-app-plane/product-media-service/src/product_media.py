@@ -2,8 +2,19 @@ from flask import Flask, request, jsonify, Response
 import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError, ClientError
 import os
+from jose import jwk, jwt
+from jose.utils import base64url_decode
 
 app = Flask(__name__)
+
+def get_tenant_id(request):
+    bearer_token = request.headers.get('Authorization')
+    if not bearer_token:
+        return None
+    token = bearer_token.split(" ")[1]
+    # get the tenant id from the token
+    tenant_id = jwt.get_unverified_claims(token)['custom:tenantId']
+    return tenant_id
 
 @app.route('/')
 def home():
@@ -39,7 +50,8 @@ def upload_file():
         file_path = os.path.join('/tmp', file.filename)
         file.save(file_path)
     # Fetch tenant id from request header, if not found raise error
-    tenant_id = request.headers.get('tenantId')
+    #tenant_id = request.headers.get('tenantId')
+    tenant_id = get_tenant_id(request)
     if not tenant_id:
         return jsonify({"error": "tenantId header is required"}), 400
     # Fetch ProductId from request header, if not found raise error
@@ -80,7 +92,9 @@ def upload_to_s3(file_path, bucket_name, tenant_id, product_id):
 @app.route('/productmedia/<productId>/<fileName>', methods=['GET'])
 def get_file(productId, fileName):
     # Fetch tenant id from request header, if not found raise error
-    tenant_id = request.headers.get('tenantId')
+    #tenant_id = request.headers.get('tenantId')
+    tenant_id = get_tenant_id(request)
+    
     if not tenant_id:
         return jsonify({"error": "tenantId header is required"}), 400
     # Fetch bucket name using the common function

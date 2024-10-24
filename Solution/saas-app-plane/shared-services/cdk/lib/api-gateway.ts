@@ -78,7 +78,7 @@ export class ApiGateway extends Construct {
       deployOptions: {
         accessLogDestination: new LogGroupLogDestination(this.restAPIAccessLogGroup),
         accessLogFormat: AccessLogFormat.custom(
-          '{"tenantId":"$context.authorizer.tenantId", "responseLatency":"$context.responseLatency", "requestId":"$context.requestId", \
+          '{"tenantId":"$context.authorizer.tenantId","feature":"$context.authorizer.feature", "responseLatency":"$context.responseLatency", "requestId":"$context.requestId", \
           "ip":"$context.identity.sourceIp", "requestTime":"$context.requestTime", "httpMethod":"$context.httpMethod", \
           "routeKey":"$context.routeKey", "status":"$context.status", "protocol":"$context.protocol", \
           "responseLength":"$context.responseLength", "resourcePath":"$context.resourcePath"}'),        
