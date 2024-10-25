@@ -62,13 +62,12 @@ class CoarseGrainedAggregator(IAggregator):
 
             tenant_usage.append({"tenant_id": tenant_id, "date": date, "usage_unit": "API Calls",
                                  "tenant_usage": api_calls, "total_usage": total_api_calls,
-                                 "tenant_percent_usage": (api_calls / total_api_calls) * 100})
+                                 "tenant_percent_usage": round((api_calls / total_api_calls) * 100,1)})
 
         return tenant_usage
 
     def aggregate_tenant_usage(self, start_date_time, end_date_time) -> dict:
-        #TODO: Uncomment the below cloudwatch insight query which aggregates the logs by tenant and date
-        #usage_by_tenant_query = 'stats count(*) as ApiCalls by tenantId as TenantId, datefloor(@timestamp, 1d) as date'
+        usage_by_tenant_query = 'stats count(*) as ApiCalls by tenantId as TenantId, datefloor(@timestamp, 1d) as date'
 
         usage_by_tenant = query_cloudwatch_logs(logs, log_group_name,
                                                 usage_by_tenant_query, start_date_time, end_date_time)
