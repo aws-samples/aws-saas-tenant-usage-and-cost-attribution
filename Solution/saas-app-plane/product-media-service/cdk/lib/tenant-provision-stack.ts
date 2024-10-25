@@ -20,7 +20,7 @@ export class TenantProvisionStack extends cdk.Stack {
     // Handle CDK nag suppressions.
     CdkNagUtils.suppressCDKNag(this);
 
-    Tags.of(this).add('saas-app-plane', 'product-media');
+    Tags.of(this).add('saas-service', 'product-media');
     // Tags.of(this).add('tenant-id', props.tenantId);
 
     const {tenantId, listenerRulePriorityBase} = props;

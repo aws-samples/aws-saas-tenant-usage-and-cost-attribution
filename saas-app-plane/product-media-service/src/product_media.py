@@ -77,7 +77,7 @@ def upload_to_s3(file_path, bucket_name, tenant_id, product_id):
         # Extract the file name from the file path
         file_name = os.path.basename(file_path)
         # Construct the full S3 object key with the prefix
-        s3_key = f"{tenant_id}/{product_id}/{file_name}"
+        s3_key = f"{tenant_id}/{product_id}_{file_name}"
         # Upload the file to S3
         s3.upload_file(file_path, bucket_name, s3_key)
         return f'Product Media File {file_name} for product {product_id} and Tenant {tenant_id}, is successfully uploaded to S3 Bucket {bucket_name}'
@@ -102,7 +102,7 @@ def get_file(productId, fileName):
     if not bucket_name:
         return jsonify({"error": "bucket_name environment variable is required"}), 400
     # Construct the S3 key
-    s3_key = f"{tenant_id}/{productId}/{fileName}"
+    s3_key = f"{tenant_id}/{productId}_{fileName}"
     # Download the file from S3
     try:
         s3 = boto3.client('s3')

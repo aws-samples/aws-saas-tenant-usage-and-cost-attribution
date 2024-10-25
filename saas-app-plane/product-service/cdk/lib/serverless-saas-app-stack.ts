@@ -14,7 +14,7 @@ export class ServerlessSaaSAppStack extends Stack {
     // Handle CDK nag suppressions.
     CdkNagUtils.suppressCDKNag(this);
 
-    Tags.of(this).add('saas-app-plane', 'product-and-order');
+    Tags.of(this).add('saas-service', 'product-and-order');
 
     const appPlaneRestAPIId = Fn.importValue('AppPlaneApiGatewayId')
     const appPlaneRestAPIRootResourceId = Fn.importValue('AppPlaneApiGatewayRootResourceId')

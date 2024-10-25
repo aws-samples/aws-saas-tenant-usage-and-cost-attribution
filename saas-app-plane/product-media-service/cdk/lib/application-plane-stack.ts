@@ -30,7 +30,7 @@ export class ApplicationPlaneStack extends Stack {
     // Handle CDK nag suppressions.
     CdkNagUtils.suppressCDKNag(this);
 
-    Tags.of(this).add('saas-app-plane', 'product-media');
+    Tags.of(this).add('saas-service', 'product-media');
 
     const appPlaneRestAPIId = Fn.importValue('AppPlaneApiGatewayId');
     const appPlaneRestAPIRootResourceId = Fn.importValue('AppPlaneApiGatewayRootResourceId');
@@ -84,7 +84,8 @@ export class ApplicationPlaneStack extends Stack {
     // Create an ECR repository
     const repository = new ecr.Repository(this, 'ProductMediaServiceRepo', {
       repositoryName: 'product-media-service',
-      removalPolicy: RemovalPolicy.DESTROY
+      removalPolicy: RemovalPolicy.DESTROY,
+      emptyOnDelete: true
     });
 
     // Define the repository policy
@@ -273,9 +274,9 @@ export class ApplicationPlaneStack extends Stack {
 
     // Create unique S3 bucket.
     const timestamp = Date.now();
-    const bucketName = `product-media-${timestamp}`;
+    //const bucketName = `product-media-${timestamp}`;
     const s3Bucket = new s3.Bucket(this, 'S3Bucket', {
-      bucketName: bucketName,
+      //bucketName: bucketName,
       removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
       versioned: false,
@@ -285,7 +286,7 @@ export class ApplicationPlaneStack extends Stack {
     // Create an S3 bucket name parameter in Parameter Store
     new ssm.StringParameter(this, 'S3BucketNameParameter', {
       parameterName: '/saasunitcost/productmedia/s3BucketName',
-      stringValue: bucketName,
+      stringValue: s3Bucket.bucketName,
       description: 'S3 bucket name for Product Media upload application'
     });
 
@@ -315,11 +316,6 @@ export class ApplicationPlaneStack extends Stack {
     new CfnOutput(this, 'ProductMediaServiceS3Bucket', {
       value: s3Bucket.bucketName,
       exportName: 'ProductMediaServiceS3Bucket'
-    });
-
-    new CfnOutput(this, 'ProductMediaServiceVpcLinkId', {
-      value: vpcLink.vpcLinkId,
-      exportName: 'ProductMediaServiceVpcLinkId'
-    });
+    });    
   }
 }

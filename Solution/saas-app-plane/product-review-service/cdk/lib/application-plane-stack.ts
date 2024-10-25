@@ -38,7 +38,7 @@ export class ApplicationPlaneStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: ApplicationPlaneStackProps) {
     super(scope, id, props);
 
-    cdk.Tags.of(this).add('saas-app-plane', 'product-review');
+    cdk.Tags.of(this).add('saas-service', 'product-review');
     // Handle CDK nag suppressions.
     CdkNagUtils.suppressCDKNag(this);
 

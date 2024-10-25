@@ -18,7 +18,7 @@ export class TenantProvisioningStack extends cdk.Stack {
         // Handle CDK nag suppressions.
         CdkNagUtils.suppressCDKNag(this);
 
-        cdk.Tags.of(this).add('saas-app-plane', 'product-review');
+        cdk.Tags.of(this).add('saas-service', 'product-review');
         // cdk.Tags.of(this).add('tenant-id', props.tenantId);
 
         const rdsHost = cdk.Fn.importValue(`RDSClusterHost`);

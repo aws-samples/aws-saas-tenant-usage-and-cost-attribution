@@ -16,7 +16,7 @@ export class SaaSControlPlaneStack extends Stack {
     // Handle CDK nag suppressions.
     CdkNagUtils.suppressCDKNag(this);
 
-    Tags.of(this).add('saas-control-plane', 'tenant-management');
+    Tags.of(this).add('saas-service', 'tenant-management');
 
     const cognitoAuth = new CognitoAuth(this, "CognitoAuth", {      
       systemAdminRoleName: props.systemAdminRoleName,

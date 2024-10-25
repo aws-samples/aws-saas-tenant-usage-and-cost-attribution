@@ -20,7 +20,7 @@ export class SharedServicesStack extends Stack {
     // Handle CDK nag suppressions.
     CdkNagUtils.suppressCDKNag(this);
 
-    Tags.of(this).add('saas-app-plane', 'shared-infra');
+    Tags.of(this).add('saas-service', 'app-plane-shared');
 
     const tenantUsageBucket = new TenantUsageBucket(this, 'TenantUsageBucket', {accountId: this.account})
 
