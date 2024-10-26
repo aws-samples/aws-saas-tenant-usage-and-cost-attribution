@@ -62,7 +62,7 @@ class CoarseGrainedAggregator(IAggregator):
 
             tenant_usage.append({"tenant_id": tenant_id, "date": date, "usage_unit": "API Calls",
                                  "tenant_usage": api_calls, "total_usage": total_api_calls,
-                                 "tenant_percent_usage": (api_calls / total_api_calls) * 100})
+                                 "tenant_percent_usage": round((api_calls / total_api_calls) * 100,1)})
 
         return tenant_usage
 
