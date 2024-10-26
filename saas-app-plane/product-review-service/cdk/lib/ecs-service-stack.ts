@@ -21,6 +21,8 @@ export class ECSServiceStack extends cdk.Stack {
     // Handle CDK nag suppressions.
     CdkNagUtils.suppressCDKNag(this);
 
+    cdk.Tags.of(this).add('saas-service', 'product-review');
+
     // Retrieve Account ID and Region from the environment context
     const accountId = cdk.Stack.of(this).account;
     const region = cdk.Stack.of(this).region;
