@@ -124,6 +124,7 @@ export class ApplicationPlaneStack extends cdk.Stack {
     const alb = new elbv2.ApplicationLoadBalancer(this, 'ProductReviewService_ALB', {
       vpc: vpc,
       internetFacing: false,
+      dropInvalidHeaderFields: true,
       vpcSubnets: {
         subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS
       },

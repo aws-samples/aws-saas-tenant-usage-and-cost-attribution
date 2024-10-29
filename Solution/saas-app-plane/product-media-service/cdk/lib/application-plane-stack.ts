@@ -148,6 +148,7 @@ export class ApplicationPlaneStack extends Stack {
     const alb = new elbv2.ApplicationLoadBalancer(this, 'ProductMediaService_ALB', {
       vpc: vpc,
       internetFacing: false,
+      dropInvalidHeaderFields: true,
       vpcSubnets: {
         subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS
       }
