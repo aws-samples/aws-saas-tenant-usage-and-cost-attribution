@@ -32,6 +32,7 @@ def log_with_tenant_and_function_context(event, context, log_dict, log_message):
         "resource": event['resource'],
         "httpMethod": event['httpMethod'],
         "tenant_id": event['requestContext']['authorizer']['tenantId'],
+        "tenant_tier": event['requestContext']['authorizer']['tenantTier'],
         "functionName": context.function_name,
         "functionVersion": context.function_version,
         "awsRequestId": context.aws_request_id,

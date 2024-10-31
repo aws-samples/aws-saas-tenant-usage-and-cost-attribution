@@ -153,7 +153,8 @@ def process_function_message(message):
             tenant_platform_report.function_version = function_message['functionVersion']
             tenant_platform_report.request_id = function_message['awsRequestId']
             #TODO: Uncomment the below line to add tenant id into the Cloudwatch
-            #tenant_platform_report.tenant_id = function_message['tenant_id']            
+            #tenant_platform_report.tenant_id = function_message['tenant_id']
+            tenant_platform_report.tier = function_message['tenant_tier']
             tenant_platform_report.has_function_logs = True
             emf = log_tenant_platform_report(tenant_platform_report)
         return emf
