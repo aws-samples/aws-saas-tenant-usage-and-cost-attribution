@@ -3,6 +3,10 @@
 SHARED_SERVICES_STACK_NAME='SharedServicesStack'
 
 export AWS_REGION=$(aws configure get region)
+if [ -z "$AWS_REGION" ]; then
+  export TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds:60")
+  export AWS_REGION=$(curl -H "X-aws-ec2-metadata-token:${TOKEN}" -s http://169.254.169.254/latest/meta-data/placement/availability-zone | sed 's/\(.*\)[a-z]/\1/') && echo "export AWS_REGION=${AWS_REGION}" >> /home/ec2-user/.bashrc
+fi
 echo "REGION: ${AWS_REGION}"
 export ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
 echo "ACCOUNT_ID: ${ACCOUNT_ID}"
