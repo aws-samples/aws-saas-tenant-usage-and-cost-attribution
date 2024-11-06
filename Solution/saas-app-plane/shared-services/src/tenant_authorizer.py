@@ -49,10 +49,7 @@ def lambda_handler(event, context):
         user_name = response["cognito:username"]
         tenant_id = response["custom:tenantId"]
         user_role = response["custom:userRole"]
-
-        # TODO: Addressing breaking changes, SBT standardizes to "tier" not "tenantTier".
-        #tenant_tier = response["custom:tenantTier"]
-        tenant_tier = "Platinum"
+        tenant_tier = response["custom:tenantTier"]
 
     tmp = event['methodArn'].split(':')
     api_gateway_arn_tmp = tmp[5].split('/')
