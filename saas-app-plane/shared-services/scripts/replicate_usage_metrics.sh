@@ -1,18 +1,13 @@
 #!/bin/bash
-# Specify the profile name (use "default" if you want the default profile)
-profile_name="default"
 
-# Get the AWS region from the specified profile
-aws_region=$(aws configure get region --profile "$profile_name")
-
-if [ -n "$aws_region" ]; then
-    echo "AWS Region for profile '$profile_name': $aws_region"
-else
-    echo "AWS Region is not set for profile '$profile_name' in the AWS CLI configuration."
+# Get region
+export AWS_REGION=$(aws configure get region)
+if [ -z "$AWS_REGION" ]; then
+  export TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds:60")
+  export AWS_REGION=$(curl -H "X-aws-ec2-metadata-token:${TOKEN}" -s http://169.254.169.254/latest/meta-data/placement/availability-zone | sed 's/\(.*\)[a-z]/\1/') && echo "export AWS_REGION=${AWS_REGION}" >> /home/ec2-user/.bashrc
 fi
-# Set your AWS region
-echo "AWS_REGION: ${aws_region}"
-export AWS_REGION=$aws_region
+echo "REGION: ${AWS_REGION}"
+
 # Set your Athena database and output location
 DATABASE="tenant_daily_usage"
 STACK_NAME_SHAREDINFRA="SharedServicesStack"
