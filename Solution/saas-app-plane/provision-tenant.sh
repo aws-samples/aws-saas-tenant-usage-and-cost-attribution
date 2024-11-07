@@ -24,7 +24,9 @@ SAAS_APP_CLIENT_ID=$(aws cloudformation describe-stacks --stack-name $SHARED_SER
 API_GATEWAY_URL=$(aws cloudformation describe-stacks --stack-name $SHARED_SERVICES_STACK_NAME --query "Stacks[0].Outputs[?OutputKey=='$API_GATEWAY_URL_OUTPUT_PARAM_NAME'].OutputValue" --output text)
 
 # Code to generate a random password with Alpha Numeric and one symbol character
-PASSWORD=$(openssl rand -base64 10 | sed 's/[\/+=]/#/g')
+PASSWORD=$(openssl rand -base64 8 | sed 's/[\/+=]/#/g')
+# add small & capital letter, digit and symbol to ensure to meet password policy
+PASSWORD=$PASSWORD'aB#9'
 echo "Generated Password: $PASSWORD"
 
 # set this password as a secret in secrets manager

@@ -35,7 +35,9 @@ echo "Features: $FEATURES"
 
 # Tenant Onboarding logic goes here
 # Code to generate a random password with Alpha Numeric and one symbol character
-PASSWORD=$(openssl rand -base64 10 | sed 's/[\/+=]/#/g')
+PASSWORD=$(openssl rand -base64 8 | sed 's/[\/+=]/#/g')
+# add small & capital letter, digit and symbol to ensure to meet password policy
+PASSWORD=$PASSWORD'aB#9'
 echo "Generated Password: $PASSWORD"
 CONTROL_PLANE_STACK_NAME="SaaSControlPlaneStack"
 CLIENT_ID=$(aws cloudformation describe-stacks --stack-name $CONTROL_PLANE_STACK_NAME --query "Stacks[0].Outputs[?OutputKey=='ControlPlaneIdpDetails'].OutputValue" | jq -r '.[0]' | jq -r '.idp.clientId')

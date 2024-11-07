@@ -133,11 +133,6 @@ for date_offset in {-1..-3}; do
         fi
     done
     echo "FINE GRAINED Usage Data creation complete for date offset $date_offset"
-    # Get the query results location
-    # RESULTS_LOCATION=$(aws athena get-query-execution --query-execution-id $FINE_GRAINED_QUERY_EXECUTION_ID --region $AWS_REGION --output text --query 'QueryExecution.ResultConfiguration.OutputLocation')
-
-    # echo "Query results are available at: $RESULTS_LOCATION"
-
 done
 # end for loop
 echo "Usage Data creation complete!"
