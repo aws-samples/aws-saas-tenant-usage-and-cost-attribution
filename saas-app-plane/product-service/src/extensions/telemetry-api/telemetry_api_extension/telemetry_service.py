@@ -128,7 +128,7 @@ def process_platform_message(message):
         if tenant_platform_report:
             tenant_platform_report.request_id = message['record']['requestId']
             tenant_platform_report.timestamp = message['time']
-            #Uncomment below two lines to add lambda duration to CloudWatch
+            #TODO Uncomment below two lines to add lambda duration to CloudWatch
             #tenant_platform_report.duration_ms = message['record']['metrics']['durationMs']
             #tenant_platform_report.billed_duration_ms = message['record']['metrics']['billedDurationMs']
             tenant_platform_report.memory_size_mb = message['record']['metrics']['memorySizeMB']
