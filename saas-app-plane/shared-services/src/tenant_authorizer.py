@@ -47,8 +47,8 @@ def lambda_handler(event, context):
         logger.info(response)
         principal_id = response["sub"]
         user_name = response["cognito:username"]
-        # TODO: Uncomment the below line extract tenant from JWT
-        # tenant_id = response["custom:tenantId"]
+        #TODO: Uncomment the below line extract tenant from JWT
+        #tenant_id = response["custom:tenantId"]
         user_role = response["custom:userRole"]
         tenant_tier = response["custom:tenantTier"]
 
