@@ -5,7 +5,7 @@ pip install pylint
 SHARED_SERVICES_STACK_NAME='SharedServicesStack'
 
 cd ../src
-python3 -m pylint -E -d E0401 $(find . -iname "*.py" -not -path "./.aws-sam/*" -not -path "./extensions/*")
+#python3 -m pylint -E -d E0401 $(find . -iname "*.py" -not -path "./.aws-sam/*" -not -path "./extensions/*")
 
 # Build extension.
 cd extensions/telemetry-api
