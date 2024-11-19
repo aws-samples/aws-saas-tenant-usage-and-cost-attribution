@@ -5,6 +5,7 @@
 ## Defines workshop configuration shared amongst scripts
 
 ## Variables
+REPO_URL="https://github.com/aws-samples/aws-saas-tenant-usage-and-cost-attribution"
 REPO_NAME="aws-saas-tenant-usage-and-cost-attribution"
 TARGET_USER="participant"
 HOME_FOLDER="Workshop"
