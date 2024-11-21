@@ -243,7 +243,10 @@ export class ApplicationPlaneStack extends Stack {
       proxy: true,
       options: {
         connectionType: ConnectionType.VPC_LINK,
-        vpcLink: vpcLink
+        vpcLink: vpcLink,
+        requestParameters: {
+          'integration.request.header.tenantId': 'context.authorizer.tenantId'
+        }
       },
     });
     productMediaResource.addMethod("POST", integrationPOSTProductMedia, methodOptions);
@@ -256,7 +259,8 @@ export class ApplicationPlaneStack extends Stack {
         vpcLink: vpcLink,
         requestParameters: {
           'integration.request.path.productId': 'method.request.path.productId',
-          'integration.request.path.fileName': 'method.request.path.fileName'
+          'integration.request.path.fileName': 'method.request.path.fileName',
+          'integration.request.header.tenantId': 'context.authorizer.tenantId'
         }
       },
     });
