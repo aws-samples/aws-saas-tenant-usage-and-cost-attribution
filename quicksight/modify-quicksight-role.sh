@@ -1,4 +1,11 @@
 #!/bin/bash -e
+# Get region
+export AWS_REGION=$(aws configure get region)
+if [ -z "$AWS_REGION" ]; then
+  export TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds:60")
+  export AWS_REGION=$(curl -H "X-aws-ec2-metadata-token:${TOKEN}" -s http://169.254.169.254/latest/meta-data/placement/availability-zone | sed 's/\(.*\)[a-z]/\1/')
+fi
+echo "REGION: ${AWS_REGION}"
 
 export ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
 echo "ACCOUNT_ID: ${ACCOUNT_ID}"
@@ -24,8 +31,8 @@ inlinePolicy=$(cat <<-EOF
                 "glue:GetTables"
             ],
             "Resource": [
-                "arn:aws:glue:us-east-1:${ACCOUNT_ID}:database/tenant_daily_usage",
-                "arn:aws:glue:us-east-1:${ACCOUNT_ID}:table/tenant_daily_usage/*"
+                "arn:aws:glue:${AWS_REGION}:${ACCOUNT_ID}:database/tenant_daily_usage",
+                "arn:aws:glue:${AWS_REGION}:${ACCOUNT_ID}:table/tenant_daily_usage/*"
             ],
             "Effect": "Allow",
             "Sid": "AllowGlueTenantUsage"
