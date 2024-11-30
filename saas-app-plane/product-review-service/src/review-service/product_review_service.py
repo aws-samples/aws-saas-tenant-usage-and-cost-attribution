@@ -45,8 +45,8 @@ def health_check():
 def get_reviews():
     start_time = time.time()
 
-    # Get the tenantId from req header
-    #tenant_id = request.headers.get('tenantId')
+    # Get the tenantId from bearer token
+    
     tenant_id = get_tenant_id(request)
         
     if tenant_id:
@@ -77,7 +77,7 @@ def get_reviews():
 def add_review():
     start_time = time.time()
     execution_time = 0
-    #tenant_id = request.headers.get('tenantId')
+    
     tenant_id = get_tenant_id(request)
 
     if tenant_id is None:
@@ -124,7 +124,7 @@ def update_review(review_id):
     start_time = time.time()
     execution_time = 0
     review_id = request.view_args['review_id'] # Extract review_id from URL path
-    #tenant_id = request.headers.get('tenantId')
+    
     tenant_id = get_tenant_id(request)
     if tenant_id is None:
         app.logger.error("Tenant ID not found")
@@ -174,7 +174,7 @@ def update_review(review_id):
 def delete_review(review_id):
     start_time = time.time()
     execution_time = 0
-    #tenant_id = request.headers.get('tenantId')
+    
     tenant_id = get_tenant_id(request)
     review_id = request.view_args['review_id']
     if tenant_id is None:

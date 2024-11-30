@@ -49,8 +49,8 @@ def upload_file():
         # nosec - Suppress bandit, B108: Probable insecure usage of temp file/directory, tmp file usage safe for processing media file.
         file_path = os.path.join('/tmp', file.filename)
         file.save(file_path)
-    # Fetch tenant id from request header, if not found raise error
-    #tenant_id = request.headers.get('tenantId')
+    # Fetch tenant id from bearer token, if not found raise error
+    
     tenant_id = get_tenant_id(request)
     if not tenant_id:
         return jsonify({"error": "tenantId header is required"}), 400
