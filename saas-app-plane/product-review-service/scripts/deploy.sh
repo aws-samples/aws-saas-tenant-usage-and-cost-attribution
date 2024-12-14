@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+cp ../../../Solution/saas-app-plane/product-review-service/src/lambdas-aggregator/ecs-usage-aggregator.py ../src/lambdas-aggregator
+
 SHARED_SERVICES_STACK_NAME='SharedServicesStack'
 
 export AWS_REGION=$(aws configure get region)
