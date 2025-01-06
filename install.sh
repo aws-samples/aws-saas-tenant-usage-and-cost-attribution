@@ -9,17 +9,17 @@ cd ../../
 
 # Deploy the application plane shared services.
 cd saas-app-plane/shared-services/scripts/
-./deploy.sh
+./deploy.sh 1
 cd ../../../
 
 # Deploy the serverless product and order microservices.
 cd saas-app-plane/product-service/scripts/
-./deploy.sh
+./deploy.sh 1
 cd ../../../
 
 # Deploy the product review service.
 cd saas-app-plane/product-review-service/scripts/
-./deploy.sh
+./deploy.sh 1
 cd ../../../
 
 # Deploy the product media stack.

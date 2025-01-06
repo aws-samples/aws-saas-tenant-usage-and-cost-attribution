@@ -1,9 +1,11 @@
 #!/bin/bash -e
 
-cp ../../../Solution/saas-app-plane/product-service/src/dal/product_service_dal.py ../src/dal
-cp ../../../Solution/saas-app-plane/product-service/src/product_service.py ../src
-cp ../../../Solution/saas-app-plane/product-service/src/extensions/telemetry-api/telemetry_api_extension/telemetry_service.py ../src/extensions/telemetry-api/telemetry_api_extension
-cp ../../../Solution/saas-app-plane/product-service/src/fine_grained_aggregator.py ../src
+[[ -z "$1" ]] && {
+  cp ../../../Solution/saas-app-plane/product-service/src/dal/product_service_dal.py ../src/dal
+  cp ../../../Solution/saas-app-plane/product-service/src/product_service.py ../src
+  cp ../../../Solution/saas-app-plane/product-service/src/extensions/telemetry-api/telemetry_api_extension/telemetry_service.py ../src/extensions/telemetry-api/telemetry_api_extension
+  cp ../../../Solution/saas-app-plane/product-service/src/fine_grained_aggregator.py ../src
+}
 
 pip install pylint
 

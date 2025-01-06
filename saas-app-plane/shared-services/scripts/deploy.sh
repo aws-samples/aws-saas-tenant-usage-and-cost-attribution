@@ -1,6 +1,8 @@
 #!/bin/bash -e
 
-cp ../../../Solution/saas-app-plane/shared-services/src/tenant_authorizer.py ../src
+[[ -z "$1" ]] && {
+  cp ../../../Solution/saas-app-plane/shared-services/src/tenant_authorizer.py ../src
+}
 
 pip install pylint
 
