@@ -82,7 +82,7 @@ export class AuroraPostgres extends Construct {
 
         // Declaring postgres engine
         let auroraEngine = rds.DatabaseClusterEngine.auroraPostgres({
-            version: rds.AuroraPostgresEngineVersion.VER_15_5,
+            version: rds.AuroraPostgresEngineVersion.of('15.8', '15'),
         });
 
         let auroraParameters: any = {};
