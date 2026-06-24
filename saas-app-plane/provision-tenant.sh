@@ -71,7 +71,7 @@ echo "FEATURES: $FEATURES"
 echo "CDK_PARAM_TENANT_ID: $CDK_PARAM_TENANT_ID"
 # clone the github code 
 echo "clone start saas-app-plane from github"
-git clone https://github.com/aws-samples/aws-saas-tenant-usage-and-cost-attribution.git
+git clone https://github.com/senthilkumarmohan/aws-saas-tenant-usage-and-cost-attribution.git
 ls -ltr
 cd aws-saas-tenant-usage-and-cost-attribution
 echo "clone complete saas-app-plane from github"
