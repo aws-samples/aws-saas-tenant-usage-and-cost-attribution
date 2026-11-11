@@ -42,9 +42,19 @@ export class IdentityProvider extends Construct {
       },
     });
 
+    // writeAttributes governs what the END USER may change about themselves, using their
+    // own access token via the ordinary UpdateUserAttributes API.
+    //
+    // No custom attribute may appear here. tenantId, userRole, tenantTier and features are
+    // all authorization inputs: the Lambda authorizer reads custom:tenantId, custom:userRole
+    // and custom:tenantTier from the verified token and uses them to build the caller's IAM
+    // policy and tenant scope. If a user could write them, they could name another tenant or
+    // promote their own role with a single API call.
+    //
+    // They are still set administratively -- shared-services/src/cognito/user_management_util.py
+    // writes custom:tenantId through the Admin API, which this list does not constrain.
     const writeAttributes = new aws_cognito.ClientAttributes()
-      .withStandardAttributes({email: true})
-      .withCustomAttributes('tenantId', 'userRole', 'tenantTier','features');
+      .withStandardAttributes({email: true});
 
     const tenantUserPoolClient = new aws_cognito.UserPoolClient(this, 'tenantUserPoolClient', {
       userPool: tenantUserPool,

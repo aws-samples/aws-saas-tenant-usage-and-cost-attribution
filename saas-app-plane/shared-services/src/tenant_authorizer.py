@@ -101,6 +101,11 @@ def lambda_handler(event, context):
             'sessiontoken': credentials["SessionToken"],
             'userName': user_name,
             #TODO: Uncomment the below line to add tenant id to the output of the lambda authorizer.
+            #   This is required, not optional. The API Gateway integrations for the product
+            #   media and product review services map this value into a request header with
+            #     'integration.request.header.tenantId': 'context.authorizer.tenantId'
+            #   and those services read the tenant from that header and refuse the request if
+            #   it is absent. Leaving this commented out means they deny every request.
             #'tenantId': tenant_id,
             'idpDetials': str(idp_details),
             'userRole': user_role,
@@ -111,6 +116,11 @@ def lambda_handler(event, context):
         context = {
             'userName': user_name,
             #TODO: Uncomment the below line to add tenant id to the output of the lambda authorizer.
+            #   This is required, not optional. The API Gateway integrations for the product
+            #   media and product review services map this value into a request header with
+            #     'integration.request.header.tenantId': 'context.authorizer.tenantId'
+            #   and those services read the tenant from that header and refuse the request if
+            #   it is absent. Leaving this commented out means they deny every request.
             #'tenantId': tenant_id,
             'idpDetials': str(idp_details),
             'userRole': user_role,

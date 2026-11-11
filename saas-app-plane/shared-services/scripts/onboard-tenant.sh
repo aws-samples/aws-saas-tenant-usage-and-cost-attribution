@@ -45,9 +45,25 @@ USER_POOL_ID=$(aws cloudformation describe-stacks --stack-name $CONTROL_PLANE_ST
 USER="admin"
 
 # required in order to initiate-auth
+#
+# UpdateUserPoolClient is a FULL REPLACE: per the AWS documentation, "if you don't provide a
+# value for an attribute, Amazon Cognito sets it to its default value." This call therefore
+# has to restate --write-attributes, or it resets the client's writable-attribute set on every
+# tenant onboarding, undoing whatever identity-provider.ts configured.
+#
+# Crucially, the default it resets to is PERMISSIVE: an app client with no write attributes
+# specified can write every mutable attribute, custom ones included. The CreateUserPoolClient
+# and UpdateUserPoolClient API reference pages describe that default the other way round and
+# are wrong (raised as P546026611). So omitting this flag handed every authenticated user
+# self-write on custom:tenantId, custom:userRole and custom:tenantTier -- the attributes the
+# Lambda authorizer uses to decide tenant scope and role -- once per onboarding run.
+#
+# Keep this list in step with writeAttributes in
+# shared-services/cdk/lib/identity-provider.ts. Standard attributes only; no custom ones.
 UPDATE_USER=$(aws cognito-idp update-user-pool-client \
     --user-pool-id "$USER_POOL_ID" \
     --client-id "$CLIENT_ID" \
+    --write-attributes email \
     --explicit-auth-flows USER_PASSWORD_AUTH)
 echo "Updated user pool client: $UPDATE_USER"
 

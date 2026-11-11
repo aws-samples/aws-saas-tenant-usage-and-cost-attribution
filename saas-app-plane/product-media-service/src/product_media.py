@@ -8,12 +8,28 @@ from jose.utils import base64url_decode
 app = Flask(__name__)
 
 def get_tenant_id(request):
-    bearer_token = request.headers.get('Authorization')
-    if not bearer_token:
+    # Read the tenant from the header API Gateway populates from the Lambda authorizer's
+    # context, NOT from the bearer token.
+    #
+    # The authorizer (shared-services/src/tenant_authorizer.py) has already verified the
+    # token's signature, issuer, expiry and audience, and resolved the tenant for the caller.
+    # The API Gateway integration maps that result in with
+    #   'integration.request.header.tenantId': 'context.authorizer.tenantId'
+    # so by the time a request reaches this service the tenant has been established by the
+    # one component entitled to establish it.
+    #
+    # This previously called jwt.get_unverified_claims() on the raw bearer token instead,
+    # which is python-jose's explicitly-named "do not check the signature" function. That
+    # discarded the authorizer's answer and let the caller supply their own, so anything able
+    # to reach this service's load balancer directly -- bypassing API Gateway and therefore
+    # the authorizer -- could name any tenant and read or write that tenant's objects.
+    #
+    # Fails closed: if the header is absent the request is refused rather than falling back
+    # to the token. A missing header means the request did not arrive through the authorizer,
+    # which is precisely the case that must not be served.
+    tenant_id = request.headers.get('tenantId')
+    if not tenant_id:
         return None
-    token = bearer_token.split(" ")[1]
-    # get the tenant id from the token
-    tenant_id = jwt.get_unverified_claims(token)['custom:tenantId']
     return tenant_id
 
 @app.route('/')
